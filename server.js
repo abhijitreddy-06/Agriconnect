@@ -11,6 +11,8 @@ import multer from "multer";
 import fs from "fs";
 import fetch from "node-fetch";
 import https from "https";
+import { Credentials, Translator } from "@translated/lara";
+
 
 // Load environment variables from .env file
 dotenv.config();
@@ -277,7 +279,7 @@ app.post("/signupcus", async (req, res) => {
 });
 
 // Route: Customer login handling
-app.post("/login", async (req, res) => {
+app.post("/logincus", async (req, res) => {
   const { phone, password } = req.body;
   try {
     // Query the customer table for an account with the provided phone number
@@ -303,7 +305,7 @@ app.post("/login", async (req, res) => {
 
     if (isMatch) {
       // Redirect to customer homepage if passwords match
-      return res.redirect("/Agriconnect/public/pages/homepage_cus.html");
+      return res.redirect("/homecus");
     } else if (!isMatch) {
       // Alert and redirect if password is incorrect
       return res.send(`
@@ -481,6 +483,58 @@ app.get("/prediction/:id", async (req, res) => {
   }
 });
 
+
+// const LARA_ACCESS_KEY_ID = "ABC123..."; // Replace with your Access Key ID
+// const LARA_ACCESS_KEY_SECRET = "aBc123..."; // Replace with your Access Key SECRET
+
+// const credentials = new Credentials(LARA_ACCESS_KEY_ID, LARA_ACCESS_KEY_SECRET);
+// const lara = new Translator(credentials);
+
+// async function main() {
+//   // This translates your text from English ("en-US") to Italian ("it-IT").
+//   const res = await lara.translate(
+//     "Hello, how are you? This text can be very long.",
+//     "en-US",
+//     "it-IT"
+//   );
+
+//   // Prints the translated text: "Ciao, come stai? Questo testo può essere molto lungo."
+//   console.log(res.translation);
+// }
+
+// main().finally(() => console.log("Done!"));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Define routes to serve various HTML pages
 
 // Route: Serve login page
@@ -498,6 +552,10 @@ app.get("/home", (req, res) => {
   res.sendFile("/Agriconnect/public/pages/homepage.html");
 });
 
+// Route: Serve homepage for customer after login/signup
+app.get("/homecus", (req, res) => {
+  res.sendFile("/Agriconnect/public/pages/homepage_cus.html");
+});
 // Route: Serve health-related page
 app.get("/health", (req, res) => {
   res.sendFile("/Agriconnect/public/pages/health.html");
@@ -511,6 +569,11 @@ app.get("/sell", (req, res) => {
 // Route: Serve farmer market page
 app.get("/market", (req, res) => {
   res.sendFile("/Agriconnect/public/pages/farmer-market.html");
+});
+
+// Route: Serve customer market page
+app.get("/marketcus", (req, res) => {
+  res.sendFile("/Agriconnect/public/pages/farmer-market_cus.html");
 });
 
 // Route: Serve a page to display different types of users

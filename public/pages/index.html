@@ -17,13 +17,17 @@
 
     <!-- Google Fonts: Nunito font -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap" rel="stylesheet">
+                <link rel="stylesheet" href="/css/loading.css">
 </head>
 
 <body class="h">
     <!-- Background element for styling purposes -->
     <div class="body-bg"></div>
-
+<div id="loadingOverlay">
+    <div class="spinner"></div>
+</div>
     <header>
+ 
         <!-- Navigation bar -->
         <nav class="navbar">
             <!-- Logo Section -->
@@ -31,10 +35,10 @@
 
             <!-- Navigation Links -->
             <ul class="nav-links">
-                <li><a href="/">🏠Home</a></li>
-                <li><a href="/whichusers">🌾Farming Guide</a></li>
-                <li><a href="/whichusers">🌿Check Plant Health </a></li>
-                <li><a href="/whichusers">🛒Farmers’ Market</a></li>
+                <li><a href="/" data-translate>🏠Home</a></li>
+                <li><a href="/whichusers" data-translate>🌾Farming Guide</a></li>
+                <li><a href="/whichusers" data-translate>🌿Check Plant Health </a></li>
+                <li><a href="/whichusers" data-translate>🛒Farmers’ Market</a></li>
             </ul>
 
             <!-- Dropdown for Language selection -->
@@ -76,6 +80,7 @@
 
     <!-- JavaScript file for interactive behavior -->
     <script type="text/javascript" src="/js/script.js"></script>
+        <script type="text/javascript" src="/js/loading.js"></script>
 </body>
 
 </html>

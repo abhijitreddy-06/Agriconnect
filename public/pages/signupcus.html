@@ -11,11 +11,16 @@
     <link rel="stylesheet" href="/css/signUp.css">
     <!-- Google Fonts: Nunito -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap" rel="stylesheet">
+                <link rel="stylesheet" href="/css/loading.css">
 </head>
 
 <body>
+    <div id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
     <!-- Header with navigation -->
     <header>
+
         <nav class="navbar">
             <div class="logo">AgriConnect</div>
             <ul class="nav-links">
@@ -31,7 +36,7 @@
         <div class="body-bg"></div>
         <div class="signup-container">
             <div class="signup-box">
-                <form class="signup-form" method="post" action="/signup">
+                <form class="signup-form" method="post" action="/signupcus">
                     <h2>Sign up as Customer</h2>
                     <!-- Input for user's name -->
                     <div class="input-group">
@@ -65,6 +70,7 @@
 
     <!-- External JavaScript file -->
     <script src="/js/script.js"></script>
+        <script type="text/javascript" src="/js/loading.js"></script>
 </body>
 
 </html>

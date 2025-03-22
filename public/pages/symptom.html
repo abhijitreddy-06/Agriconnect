@@ -9,9 +9,13 @@
     <title>Leaf Disease Analyzer</title>
     <!-- Link to CSS stylesheet for symptoms -->
     <link rel="stylesheet" href="/css/symptom.css">
+                <link rel="stylesheet" href="/css/loading.css">
 </head>
 
 <body>
+    <div id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
     <!-- Navigation bar with page title -->
     <nav>
         <h1>Leaf Disease Analyzer</h1>
@@ -19,6 +23,7 @@
     <!-- Main content area -->
     <main>
         <div class="container">
+  
             <!-- Form for image upload and analysis -->
             <form id="uploadForm" enctype="multipart/form-data">
                 <!-- Image upload input -->
@@ -54,6 +59,7 @@
     </footer>
     <!-- External JavaScript file -->
     <script src="/js/symptom.js"></script>
+        <script type="text/javascript" src="/js/loading.js"></script>
 </body>
 
 </html>

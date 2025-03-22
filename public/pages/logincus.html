@@ -15,11 +15,16 @@
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap" rel="stylesheet">
+                <link rel="stylesheet" href="/css/loading.css">
 </head>
 
 <body>
+    <div id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
     <!-- Header with navigation -->
     <header>
+
         <nav class="navbar">
             <div class="logo">AgriConnect</div>
             <ul class="nav-links">
@@ -35,7 +40,7 @@
         <div class="body-bg"></div>
         <div class="logincontainer">
             <div class="login-container">
-                <form class="login-form" action="/login" method="post">
+                <form class="login-form" action="/logincus" method="post">
                     <h2>Login as Customer</h2>
                     <!-- Phone input -->
                     <div class="input-group">
@@ -66,6 +71,7 @@
 
     <!-- External JS -->
     <script src="/js/script.js"></script>
+        <script type="text/javascript" src="/js/loading.js"></script>
 
 </body>
 
