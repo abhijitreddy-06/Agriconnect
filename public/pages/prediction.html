@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Prediction Details</title>
+    <link rel="stylesheet" href="/css/symptom.css">
+</head>
+
+<body>
+    <nav>
+        <h1>Prediction Details</h1>
+    </nav>
+    <main>
+        <div class="prediction-card">
+            <h2 id="predictionTitle"></h2>
+            <p id="predictionDetails"></p>
+            <button id="newPrediction">Another Prediction</button>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2025 Leaf Disease Analyzer</p>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+            if (id) {
+                try {
+                    const res = await fetch('/prediction/' + id);
+                    const result = await res.json();
+                    if (result.success) {
+                        document.getElementById('predictionTitle').innerText = result.data.gemini_title || 'Prediction';
+                        document.getElementById('predictionDetails').innerText = result.data.gemini_details || 'No details available.';
+                    }
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+            // Redirect to home for another prediction
+            document.getElementById('newPrediction').addEventListener('click', () => {
+                window.location.href = '/predict';
+            });
+        });
+    </script>
+</body>
+
+</html>

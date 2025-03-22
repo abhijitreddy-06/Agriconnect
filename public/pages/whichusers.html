@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Set character encoding and responsive viewport -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Page title -->
+    <title>Profession Selection</title>
+    <!-- Link to profession selection specific styles -->
+    <link rel="stylesheet" href="/css/whichusers.css">
+    <!-- Link to global styles -->
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body>
+    <!-- Header with navigation bar -->
+    <header>
+        <nav class="navbar">
+            <!-- Logo -->
+            <div class="logo">AgriConnect</div>
+            <!-- Navigation links -->
+            <ul class="nav-links">
+                <li><a href="/">🏠Home</a></li>
+                <li><a href="/whichusers">🌾Farming Guide</a></li>
+                <li><a href="/whichusers">🌿Check Plant Health </a></li>
+                <li><a href="/whichusers">🛒Farmers’ Market</a></li>
+            </ul>
+            <!-- Dropdown for language selection -->
+            <div class="dropdown">
+                <button class="dropbtn" onclick="toggleDropdown()">Language</button>
+                <div class="dropdown-content">
+                    <a href="">English</a>
+                    <a href="">Kannada</a>
+                </div>
+            </div>
+            <!-- Sign-up button -->
+            <button class="login-btn" onclick="window.location.href='/whichusers'">Sign-up</button>
+            <!-- Hamburger menu for mobile view -->
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main content area -->
+    <main>
+        <!-- Background styling element -->
+        <div class="body-bg"></div>
+        <!-- Container for the main content -->
+        <div class="main-content">
+            <!-- Container for selection cards -->
+            <div class="cards-container">
+                <!-- Card for Customer selection -->
+                <div class="card">
+                    <img src="/images/customer.jpg" alt="Customer">
+                    <h2>Are you a Customer?</h2>
+                    <button class="btn" onclick="window.location.href='/signupcus'">Login as Customer</button>
+                </div>
+                <!-- Card for Farmer selection -->
+                <div class="card">
+                    <img src="/images/indian_farmer.jpg" alt="Farmer">
+                    <h2>Are you a Farmer?</h2>
+                    <button class="btn" onclick="window.location.href='/signup'">Login as Farmer</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer section -->
+    <footer class="footer">
+        <p>&copy; 2025 AgriConnect. All rights reserved.</p>
+    </footer>
+
+    <!-- External JavaScript file -->
+    <script src="/js/script.js"></script>
+</body>
+
+</html>

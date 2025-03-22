@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Set character encoding and viewport -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Page title -->
+    <title>Leaf Disease Analyzer</title>
+    <!-- Link to CSS stylesheet for symptoms -->
+    <link rel="stylesheet" href="/css/symptom.css">
+</head>
+
+<body>
+    <!-- Navigation bar with page title -->
+    <nav>
+        <h1>Leaf Disease Analyzer</h1>
+    </nav>
+    <!-- Main content area -->
+    <main>
+        <div class="container">
+            <!-- Form for image upload and analysis -->
+            <form id="uploadForm" enctype="multipart/form-data">
+                <!-- Image upload input -->
+                <label for="imageInput">Upload Image:</label>
+                <input type="file" id="imageInput" name="imageInput" accept="image/*" capture="environment" required>
+
+                <!-- Text area for description -->
+                <label for="description">Description:</label>
+                <textarea id="description" name="description" placeholder="Describe the issue..."></textarea>
+
+                <!-- Input for preferred language -->
+                <label for="language">Preferred Language (e.g., Kannada, Marathi, English, or any other):</label>
+                <input type="text" id="language" name="language" placeholder="English" required>
+
+                <!-- Button to trigger speech input -->
+                <button type="button" id="micButton">🎤 Speak</button>
+                <!-- Paragraph to display microphone status -->
+                <p id="micStatus" style="color: green;"></p>
+
+                <!-- Submit button for analysis -->
+                <button type="submit">Submit & Analyze</button>
+            </form>
+            <!-- Image preview section -->
+            <div class="preview">
+                <h2>Uploaded Image Preview</h2>
+                <img id="imagePreview" src="" alt="Image preview" style="display:none;" />
+            </div>
+        </div>
+    </main>
+    <!-- Footer section -->
+    <footer>
+        <p>&copy; 2025 Leaf Disease Analyzer</p>
+    </footer>
+    <!-- External JavaScript file -->
+    <script src="/js/symptom.js"></script>
+</body>
+
+</html>

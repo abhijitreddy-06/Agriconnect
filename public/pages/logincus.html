@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Meta and title -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <!-- CSS files -->
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/login.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Header with navigation -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">AgriConnect</div>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+            </ul>
+            <!-- Redirect to Farmer Signup -->
+            <button class="login-btn" onclick="window.location.href='/signup'">Sign Up as Farmer</button>
+        </nav>
+    </header>
+
+    <!-- Main login form -->
+    <main>
+        <div class="body-bg"></div>
+        <div class="logincontainer">
+            <div class="login-container">
+                <form class="login-form" action="/login" method="post">
+                    <h2>Login as Customer</h2>
+                    <!-- Phone input -->
+                    <div class="input-group">
+                        <label for="phone">Phone number</label>
+                        <input type="tel" id="phone" name="phone" placeholder="Enter your Phone number"
+                            pattern="[0-9]{10}" required>
+                    </div>
+                    <!-- Password input with toggle -->
+                    <div class="input-group">
+                        <label for="password">Password</label>
+                        <div class="password-container">
+                            <input type="password" id="password" name="password" placeholder="Enter Password" required>
+                        </div>
+                    </div>
+                    <!-- Submit button -->
+                    <button type="submit" class="login-btnn">Login</button>
+                    <!-- Signup link -->
+                    <p class="signup-link">Don't have an account? <a href="/signupcus">Sign up</a></p>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2025 AgriConnect. All rights reserved.</p>
+    </footer>
+
+    <!-- External JS -->
+    <script src="/js/script.js"></script>
+
+</body>
+
+</html>

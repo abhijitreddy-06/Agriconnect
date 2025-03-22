@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Meta info and page title -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <!-- Global and sign-up specific styles -->
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/signUp.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Header with navigation bar -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">AgriConnect</div>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+            </ul>
+            <!-- Button linking to Customer login -->
+            <button class="login-btn"><a href="/logincus">Customer</a></button>
+        </nav>
+    </header>
+
+    <!-- Main content area with sign-up form -->
+    <main>
+        <div class="body-bg"></div>
+        <div class="signup-container">
+            <div class="signup-box">
+                <form class="signup-form" method="post" action="/signup">
+                    <h2>Sign up as Farmer</h2>
+                    <!-- Input for user's name -->
+                    <div class="input-group">
+                        <label for="username">Your Name</label>
+                        <input type="text" id="username" name="username" placeholder="Enter your Name..." required>
+                    </div>
+                    <!-- Input for phone number -->
+                    <div class="input-group">
+                        <label for="phone">Phone number</label>
+                        <input type="tel" id="phone" name="phone" placeholder="Enter your Phone number..." required>
+                    </div>
+                    <!-- Input for creating a password -->
+                    <div class="input-group">
+                        <label for="password">Create Password</label>
+                        <input type="password" id="password" name="password" placeholder="Create a Password..."
+                            required>
+                    </div>
+                    <!-- Submit button -->
+                    <button type="submit" class="signup-btn">Sign Up</button>
+                    <!-- Link to login page for existing users -->
+                    <p>Already have an account? <a href="/login" class="signup-link">Login</a></p>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer section -->
+    <footer class="footer">
+        <p>&copy; 2025 AgriConnect. All rights reserved.</p>
+    </footer>
+
+    <!-- External JavaScript for interactive functionality -->
+    <script src="/js/script.js"></script>
+</body>
+
+</html>

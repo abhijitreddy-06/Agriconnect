@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Set character encoding and responsive viewport -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Page title -->
+    <title>Add Product</title>
+    <!-- Link to sell-specific CSS -->
+    <link rel="stylesheet" href="/css/sell.css">
+    <!-- Link to global styles -->
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body>
+    <!-- Background styling element -->
+    <div class="body-bg"></div>
+    <header>
+        <!-- Navigation bar -->
+        <nav class="navbar">
+            <!-- Site logo -->
+            <div class="logo">AgriConnect</div>
+            <!-- Navigation links -->
+            <ul class="nav-links">
+                <li><a href="/">🏠Home</a></li>
+                <li><a href="/whichusers">🌾Farming Guide</a></li>
+                <li><a href="/whichusers">🌿Check Plant Health </a></li>
+                <li><a href="/whichusers">🛒Farmers’ Market</a></li>
+            </ul>
+            <!-- Language selection dropdown -->
+            <div class="dropdown">
+                <button class="dropbtn" onclick="toggleDropdown()">Language</button>
+                <div class="dropdown-content">
+                    <a href="">English</a>
+                    <a href="">Kannada</a>
+                </div>
+            </div>
+            <!-- Sign-up button -->
+            <button class="login-btn" onclick="window.location.href='/whichusers'">Sign-up</button>
+            <!-- Hamburger menu for mobile view -->
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </nav>
+    </header>
+    <!-- Main container for product submission -->
+    <div class="container">
+        <h1>Sell Your Product</h1>
+        <!-- Form to add a new product -->
+        <form action="/api/products" method="POST" enctype="multipart/form-data">
+            <!-- Product name input -->
+            <label for="productName">Product Name:</label>
+            <input type="text" id="productName" name="productName" required>
+
+            <!-- Product price input -->
+            <label for="productPrice">Price (₹):</label>
+            <input type="number" id="productPrice" name="productPrice" required>
+
+            <!-- Product quantity input -->
+            <label for="productQuantity">Quantity (Units):</label>
+            <input type="number" id="productQuantity" name="productQuantity" required>
+
+            <!-- Product quality selector -->
+            <label for="productQuality">Quality:</label>
+            <select id="productQuality" name="productQuality" required>
+                <option value="High">High</option>
+                <option value="Medium">Medium</option>
+                <option value="Low">Low</option>
+            </select>
+
+            <!-- Product weight input -->
+            <label for="productKg">Weight (kg):</label>
+            <input type="number" id="productKg" name="productKg" required>
+
+            <!-- Product description input -->
+            <label for="productDescription">Description:</label>
+            <textarea id="productDescription" name="productDescription" required></textarea>
+
+            <!-- Contact number input -->
+            <label for="contactNumber">Contact Number:</label>
+            <input type="tel" id="contactNumber" name="contactNumber" required>
+
+            <!-- Product image upload (accepts images from camera or folder) -->
+            <label for="productImage">Product Image (Camera or Folder):</label>
+            <input type="file" id="productImage" name="productImage" accept="image/*" capture="environment" required>
+
+            <!-- Submit button for the form -->
+            <button type="submit">Submit Product</button>
+        </form>
+    </div>
+    <!-- Footer section -->
+    <footer class="footer">
+        <p>&copy; 2025 AgriConnect. All rights reserved.</p>
+    </footer>
+    <!-- External JavaScript file -->
+    <script type="text/javascript" src="/js/script.js"></script>
+    <!-- Inline script (commented out) for form-group focus effect -->
+    <!-- 
+    <script>
+        document.querySelectorAll('.form-group').forEach(group => {
+            const input = group.querySelector('input, textarea, select');
+            input.addEventListener('focus', () => group.classList.add('focused'));
+            input.addEventListener('blur', () => {
+                if (!input.value) group.classList.remove('focused');
+            });
+        });
+    </script>
+    -->
+</body>
+</html>

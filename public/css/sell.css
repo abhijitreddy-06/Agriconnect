@@ -1,0 +1,165 @@
+:root {
+  --primary-color: #228b22;
+  --secondary-color: #1e7a1e;
+  --accent-color: #ffd700;
+  --gradient-bg: linear-gradient(135deg, #f7f7f7 0%, #e8f5e9 100%);
+  --input-spacing: 1.5rem;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: var(--gradient-bg);
+  margin: 0;
+  padding: 2rem 0;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #ffffff; /* Changed to solid white */
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.container:hover {
+  transform: translateY(-5px);
+}
+
+h1 {
+  text-align: center;
+  color: var(--primary-color);
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+h1::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: var(--accent-color);
+}
+
+.form-group {
+  position: relative;
+  margin-bottom: var(--input-spacing);
+}
+
+form label {
+  display: block;
+  margin: 0 0 0.8rem 0.2rem;
+  font-weight: 600;
+  color: #444;
+  transition: all 0.3s ease;
+}
+
+form input,
+form textarea,
+form select {
+  width: 100%;
+  padding: 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  background: #f8f8f8;
+  margin-bottom: 0.5rem;
+}
+
+form input:focus,
+form textarea:focus,
+form select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(34, 139, 34, 0.1);
+}
+
+form input:hover,
+form textarea:hover,
+form select:hover {
+  border-color: #c0c0c0;
+}
+
+form button {
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+}
+
+form button:hover {
+  background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(34, 139, 34, 0.3);
+}
+
+form button:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+  :root {
+    --input-spacing: 1.2rem;
+  }
+  
+  .container {
+    max-width: 90%;
+    padding: 1.5rem;
+    border-radius: 15px;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  form input,
+  form textarea,
+  form select,
+  form button {
+    padding: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --input-spacing: 1rem;
+  }
+
+  .container {
+    max-width: 95%;
+    padding: 1rem;
+    border-radius: 12px;
+  }
+
+  h1 {
+    font-size: 1.75rem;
+  }
+
+  form input,
+  form textarea,
+  form select,
+  form button {
+    padding: 0.7rem;
+    font-size: 14px;
+  }
+
+  form button {
+    font-size: 14px;
+  }
+}
