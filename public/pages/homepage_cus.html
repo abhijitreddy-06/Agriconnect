@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Meta tags for character set and responsive design -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Page title -->
+    <title>AgriConnect</title>
+
+    <!-- Link to external CSS for styling -->
+    <link rel="stylesheet" href="/css/styles.css">
+
+    <!-- Link to Google Fonts (Nunito) -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Background element for styling purposes -->
+    <div class="body-bg"></div>
+    <!-- Header section containing the navigation bar -->
+    <header>
+        <nav class="navbar">
+            <!-- Logo for AgriConnect -->
+            <div class="logo">AgriConnect</div>
+
+            <!-- Navigation links -->
+            <ul class="nav-links">
+                <li><a href="/home">🏠Home</a></li>
+                <li><a href="/upload">🌿Check Plant Health </a></li>
+                <li><a href="/market">🛒Farmers’ Market</a></li>
+                <li><a href="/sell">🛍️Sell Product</a></li>
+                                <li><a href="/">Log-out</a></li>
+            </ul>
+
+            <!-- Dropdown for language selection -->
+            <div class="dropdown">
+                <!-- Button that triggers the language dropdown -->
+                <button class="dropbtn" onclick="toggleDropdown()">Language</button>
+                <!-- Dropdown content with available languages -->
+                <div class="dropdown-content">
+                    <a href="">English</a>
+                    <a href="">Kannada</a>
+                </div>
+            </div>
+
+            <!-- Profile button -->
+            <button class="login-btn" onclick="window.location.href = '/profile' ">Profile</button>
+
+            <!-- Hamburger menu for mobile devices -->
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <!-- Main container for the welcome message and call-to-action -->
+        <div class="main-container">
+            <h1>Welcome to AgriConnect!</h1>
+            <p>Discover the world of agriculture with our powerful and user-friendly platform.</p>
+            <button class="main-button" onclick="window.location.href='/upload'">
+                Get Solution for your Plants Problem
+            </button>
+            <button class="main-button" onclick="window.location.href='/market'">
+               Farmer market 
+            </button>
+        </div>
+    </main>
+    <!-- Footer section -->
+    <footer class="footer">
+        <p>&copy; 2025 AgriConnect. All rights reserved.</p>
+    </footer>
+    <!-- Link to external JavaScript file for interactivity -->
+    <script src="/js/script.js"></script>
+</body>
+
+</html>

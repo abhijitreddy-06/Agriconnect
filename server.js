@@ -1,3 +1,4 @@
+// Importing required modules and libraries
 import express from "express";
 import pg from "pg";
 import bodyParser from "body-parser";
@@ -8,28 +9,30 @@ import axios from "axios";
 import dotenv from "dotenv";
 import multer from "multer";
 import fs from "fs";
-import fetch from "node-fetch"; 
+import fetch from "node-fetch";
 import https from "https";
 
+// Load environment variables from .env file
 dotenv.config();
 
+// Initialize express app and define the port
 const app = express();
 const port = 3000;
 
-//files tracing
+// Files tracing: Determine current file and directory names
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-//public static files
+// Serve public static files from designated folders
 app.use(express.static("public"));
 app.use(express.static(path.join(__dirname, "Agriconnect/public")));
 app.use("/uploads", express.static("uploads"));
 
-//body parser middle ware
+// Configure body parser middleware to handle JSON and URL-encoded data
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-//Postgres connection
+// Set up Postgres connection using environment variables
 const db = new pg.Client({
   user: process.env.USER_NAME,
   host: "localhost",
@@ -38,6 +41,7 @@ const db = new pg.Client({
   port: 5432,
 });
 
+// Connect to the Postgres database and log connection status
 db.connect((err) => {
   if (err) {
     console.log("error connecting to postgreSQL");
@@ -46,27 +50,29 @@ db.connect((err) => {
   }
 });
 
+// Route: Handle user signup
 app.post("/signup", async (req, res) => {
   try {
     const { username, phone, password } = req.body;
-    // Check if all fields are filled
+    // Check if all required fields are provided
     if (!username || !phone || !password) {
       return res.send(
         `<script>alert("All fields are required."); window.location.href='/signup';</script>`
       );
     }
+    // Validate that phone number is exactly 10 digits
     if (!/^\d{10}$/.test(phone)) {
       return res.send(
         `<script>alert("Phone number must be exactly 10 digits and contain only numbers."); window.location.href='/signup';</script>`
       );
     }
-    // Check if password is at least 6 characters long
+    // Ensure password meets the minimum length requirement
     if (password.length < 6) {
       return res.send(
         `<script>alert("Password must be more than 6 characters."); window.location.href='/signup';</script>`
       );
     }
-    // Check if an account already exists with the given email or phone number
+    // Check if an account with the same phone number already exists
     const existingUser = await db.query(
       "SELECT * FROM signup WHERE phone_no = $1",
       [phone]
@@ -78,17 +84,17 @@ app.post("/signup", async (req, res) => {
       );
     }
 
-    // Hash the password before storing in the database
+    // Hash the password before storing in the database for security
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Insert new user into the database
+    // Insert the new user's data into the database
     const insertQuery = `
       INSERT INTO signup (username, phone_no, password)
       VALUES ($1, $2, $3);
     `;
     await db.query(insertQuery, [username, phone, hashedPassword]);
 
-    // Redirect user to home page after successful signup
+    // Redirect the user to the homepage upon successful signup
     res.sendFile("/Agriconnect/public/pages/homepage.html");
   } catch (err) {
     console.error("Signup Error:", err);
@@ -98,16 +104,17 @@ app.post("/signup", async (req, res) => {
   }
 });
 
+// Route: Handle user login
 app.post("/login", async (req, res) => {
   const { phone, password } = req.body;
   try {
-    // Check if the account exists
+    // Check if an account exists with the provided phone number
     const result = await db.query("SELECT * FROM signup WHERE phone_no = $1", [
       phone,
     ]);
 
     if (result.rows.length === 0) {
-      // Account not found
+      // If no account is found, alert the user and redirect to login
       return res.send(`
         <script>
           alert('Account not found');
@@ -118,12 +125,14 @@ app.post("/login", async (req, res) => {
 
     const user = result.rows[0];
 
-    // Compare hashed password with entered password
+    // Compare the provided password with the stored hashed password
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (isMatch) {
+      // Redirect to home if passwords match
       return res.redirect("/home");
     } else if (!isMatch) {
+      // Alert and redirect if password does not match
       return res.send(`
         <script>
           alert('Wrong password');
@@ -137,12 +146,16 @@ app.post("/login", async (req, res) => {
   }
 });
 
-//market 
+// Market-related code for handling file uploads and product insertion
 
+// Define the upload directory path for product images
 const uploadDir = path.join(__dirname, "public", "uploads");
+// Check if the upload directory exists; if not, create it
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
+
+// Configure multer storage settings for handling file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, path.join(__dirname, "public", "uploads"));
@@ -153,8 +166,9 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
+// Route: Handle product submission with file upload
 app.post("/api/products", upload.single("productImage"), async (req, res) => {
-  // Extract fields from the form
+  // Extract product details from the request body
   const {
     productName,
     productPrice,
@@ -164,22 +178,25 @@ app.post("/api/products", upload.single("productImage"), async (req, res) => {
     productDescription,
     contactNumber,
   } = req.body;
+  // Determine the image path if a file was uploaded
   const imagePath = req.file ? "/uploads/" + req.file.filename : "";
 
   try {
+    // Define maximum allowed values for product quantity and price
     const maxAllowedKg = 2000;
     const maxAllowedPrice = 20000;
+    // Validate product quantity
     if (req.body.productKg > maxAllowedKg) {
       return res.send(
         `<script>alert("Please enter a reasonable quantity. Max allowed: 2000 kg per listing."); window.location.href='/sell';</script>`
       );
-
-    } else if(req.body.productPrice > maxAllowedPrice){
-       return res.send(
-         `<script>alert("Please enter a reasonable Price. Max allowed: ₹20000  per listing."); window.location.href='/sell';</script>`
-       );
-    }
-    else {
+    } else if (req.body.productPrice > maxAllowedPrice) {
+      // Validate product price
+      return res.send(
+        `<script>alert("Please enter a reasonable Price. Max allowed: ₹20000  per listing."); window.location.href='/sell';</script>`
+      );
+    } else {
+      // Insert the product details into the database
       const insertQuery = `
       INSERT INTO products (product_name, price, quantity, quality, kg, description, contact_number, image)
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
@@ -196,7 +213,7 @@ app.post("/api/products", upload.single("productImage"), async (req, res) => {
         imagePath,
       ];
       await db.query(insertQuery, values);
-      // Redirect to the market page after successful insertion
+      // Redirect to the farmer market page after successful insertion
       res.redirect("/pages/farmer-market.html");
     }
   } catch (error) {
@@ -204,7 +221,105 @@ app.post("/api/products", upload.single("productImage"), async (req, res) => {
     res.status(500).send("Server error");
   }
 });
-// GET endpoint to fetch all products
+
+// Route: Customer signup handling
+app.post("/signupcus", async (req, res) => {
+  try {
+    const { username, phone, password } = req.body;
+    // Validate that all required fields are provided
+    if (!username || !phone || !password) {
+      return res.send(
+        `<script>alert("All fields are required."); window.location.href='/signupcus';</script>`
+      );
+    }
+    // Validate phone number format (exactly 10 digits)
+    if (!/^\d{10}$/.test(phone)) {
+      return res.send(
+        `<script>alert("Phone number must be exactly 10 digits and contain only numbers."); window.location.href='/signupcus';</script>`
+      );
+    }
+    // Check for minimum password length
+    if (password.length < 6) {
+      return res.send(
+        `<script>alert("Password must be more than 6 characters."); window.location.href='/signupcus';</script>`
+      );
+    }
+    // Check if an account already exists with the provided phone number
+    const existingUser = await db.query(
+      "SELECT * FROM cus_signup WHERE phone_no = $1",
+      [phone]
+    );
+
+    if (existingUser.rows.length > 0) {
+      return res.send(
+        `<script>alert("Account already exists."); window.location.href='/signupcus';</script>`
+      );
+    }
+
+    // Hash the password for secure storage
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Insert new customer details into the database
+    const insertQuery = `
+      INSERT INTO cus_signup (username, phone_no, password)
+      VALUES ($1, $2, $3);
+    `;
+    await db.query(insertQuery, [username, phone, hashedPassword]);
+
+    // Redirect customer to the customer homepage after signup
+    res.sendFile("/Agriconnect/public/pages/homepage_cus.html");
+  } catch (err) {
+    console.error("Signup Error:", err);
+    res.send(
+      `<script>alert("Something went wrong. Please try again."); window.location.href='/signupcus';</script>`
+    );
+  }
+});
+
+// Route: Customer login handling
+app.post("/login", async (req, res) => {
+  const { phone, password } = req.body;
+  try {
+    // Query the customer table for an account with the provided phone number
+    const result = await db.query(
+      "SELECT * FROM cus_signup WHERE phone_no = $1",
+      [phone]
+    );
+
+    if (result.rows.length === 0) {
+      // Alert and redirect if account not found
+      return res.send(`
+        <script>
+          alert('Account not found');
+          window.location.href="/logincus";
+        </script>
+      `);
+    }
+
+    const user = result.rows[0];
+
+    // Compare the provided password with the stored hashed password
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (isMatch) {
+      // Redirect to customer homepage if passwords match
+      return res.redirect("/Agriconnect/public/pages/homepage_cus.html");
+    } else if (!isMatch) {
+      // Alert and redirect if password is incorrect
+      return res.send(`
+        <script>
+          alert('Wrong password');
+          window.location.href="/logincus";
+        </script>
+      `);
+    }
+  } catch (err) {
+    console.error("Login Error:", err);
+    res.status(500).send("Server error, please try again.");
+  }
+});
+
+// GET endpoint to fetch all products from the database and return them as JSON
 app.get("/api/products", async (req, res) => {
   try {
     const result = await db.query("SELECT * FROM products ORDER BY id DESC");
@@ -215,14 +330,14 @@ app.get("/api/products", async (req, res) => {
   }
 });
 
-//symtom prediction 
-// Route: Handle form submission for image upload, description, and language
-app.post('/upload', upload.single('imageInput'), async (req, res) => {
+// Symptom prediction: Handle image upload and description submission
+app.post("/upload", upload.single("imageInput"), async (req, res) => {
   try {
     const { description, language } = req.body;
     const filePath = req.file.path;
-    // Save the form details into the database, including the preferred language
-    const query = 'INSERT INTO predictions (image_path, description, language) VALUES ($1, $2, $3) RETURNING id';
+    // Save the image path, description, and language preference into the database
+    const query =
+      "INSERT INTO predictions (image_path, description, language) VALUES ($1, $2, $3) RETURNING id";
     const values = [filePath, description, language];
     const result = await db.query(query, values);
     res.json({ success: true, predictionId: result.rows[0].id });
@@ -232,13 +347,12 @@ app.post('/upload', upload.single('imageInput'), async (req, res) => {
   }
 });
 
-
-// /analyze route
+// Route: Analyze the uploaded image using Gemini AI for symptom prediction
 app.post("/analyze", async (req, res) => {
   try {
     const { predictionId } = req.body;
 
-    // Retrieve the record from the database
+    // Retrieve the prediction record from the database using its ID
     const dbResult = await db.query("SELECT * FROM predictions WHERE id = $1", [
       predictionId,
     ]);
@@ -249,17 +363,14 @@ app.post("/analyze", async (req, res) => {
     }
     const record = dbResult.rows[0];
 
-    // Construct the image URL.
-    // If record.image_path is already a public URL (starts with "http"), use it; otherwise, build one.
-    // const imageUrl = record.image_path.startsWith("http")
-    //   ? record.image_path
-    //   : `${req.protocol}://${req.get("host")}/${record.image_path}`;
-const imageUrl =
-  "https://1.bp.blogspot.com/-fr7iwyvZ5t8/Xp082pHa5pI/AAAAAAAABBw/DSrN-yg9Lz4K3OjMzYD5gc_GHurIHvcRgCLcBGAsYHQ/s1600/Leaf%2Bspot%2Bdisease.jpg";
-    // Construct prompt for Gemini AI.
-    // If the image URL is local (contains "localhost"), provide a fallback prompt.
+    // For demonstration purposes, a hardcoded image URL is used.
+    const imageUrl =
+      "https://1.bp.blogspot.com/-fr7iwyvZ5t8/Xp082pHa5pI/AAAAAAAABBw/DSrN-yg9Lz4K3OjMzYD5gc_GHurIHvcRgCLcBGAsYHQ/s1600/Leaf%2Bspot%2Bdisease.jpg";
+
+    // Construct the prompt for Gemini AI based on the image URL and record details
     let prompt;
     if (imageUrl.includes("localhost")) {
+      // If the image URL is local, provide a fallback prompt for additional details
       prompt = `
 I cannot access local files like the image provided (${imageUrl}). Therefore, I cannot analyze the image directly.
 To help diagnose the issue, please provide a publicly accessible image URL (e.g., from Imgur or Cloudinary).
@@ -288,6 +399,7 @@ Detailed Explanation:
 Please provide additional details or a publicly accessible image URL for a more specific diagnosis.
       `;
     } else {
+      // Otherwise, construct a detailed prompt including image URL and description
       prompt = `
 Analyze the following image and description:
 Image URL: ${imageUrl}
@@ -300,14 +412,14 @@ Format your answer clearly and concisely for easy understanding.
       `;
     }
 
-    // Define the Gemini API URL using an updated model name.
+    // Define the Gemini AI model and API endpoint
     const GEMINI_MODEL = "models/gemini-1.5-pro-002";
     const geminiApiUrl = `https://generativelanguage.googleapis.com/v1/${GEMINI_MODEL}:generateContent?key=${process.env.GEMINI_API_KEY}`;
 
-    // Create an HTTPS agent for improved connection handling
+    // Create an HTTPS agent to manage connections efficiently
     const httpsAgent = new https.Agent({ keepAlive: true });
 
-    // Make the request to Gemini AI using axios with a 30-second timeout
+    // Make the API request to Gemini AI with a 30-second timeout
     const response = await axios.post(
       geminiApiUrl,
       {
@@ -327,17 +439,18 @@ Format your answer clearly and concisely for easy understanding.
       throw new Error("No response from Gemini AI.");
     }
 
-    // Extract AI response text
+    // Extract the response text from Gemini AI
     const responseText =
       geminiResponse.candidates[0]?.content?.parts[0]?.text ||
       "No valid response.";
 
-    // Update the database with the AI response
+    // Update the predictions table with the Gemini AI response
     await db.query("UPDATE predictions SET gemini_details = $1 WHERE id = $2", [
       responseText,
       predictionId,
     ]);
 
+    // Return the AI-generated details as JSON
     res.json({ success: true, data: { details: responseText } });
   } catch (error) {
     console.error("Error in /analyze:", error.message);
@@ -351,7 +464,7 @@ Format your answer clearly and concisely for easy understanding.
   }
 });
 
-// Route: Fetch prediction details for display on the prediction page
+// Route: Fetch prediction details based on prediction ID for display
 app.get("/prediction/:id", async (req, res) => {
   try {
     const query = "SELECT * FROM predictions WHERE id = $1";
@@ -368,68 +481,69 @@ app.get("/prediction/:id", async (req, res) => {
   }
 });
 
+// Define routes to serve various HTML pages
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//routes
+// Route: Serve login page
 app.get("/login", (req, res) => {
   res.sendFile("/Agriconnect/public/pages/login.html");
 });
+
+// Route: Serve signup page
 app.get("/signup", (req, res) => {
   res.sendFile("/Agriconnect/public/pages/signUp.html");
 });
+
+// Route: Serve homepage after login/signup
 app.get("/home", (req, res) => {
   res.sendFile("/Agriconnect/public/pages/homepage.html");
 });
+
+// Route: Serve health-related page
 app.get("/health", (req, res) => {
   res.sendFile("/Agriconnect/public/pages/health.html");
 });
+
+// Route: Serve selling page for product listings
 app.get("/sell", (req, res) => {
   res.sendFile("/Agriconnect/public/pages/selling.html");
 });
+
+// Route: Serve farmer market page
 app.get("/market", (req, res) => {
   res.sendFile("/Agriconnect/public/pages/farmer-market.html");
 });
+
+// Route: Serve a page to display different types of users
 app.get("/whichusers", (req, res) => {
   res.sendFile("/Agriconnect/public/pages/whichusers.html");
 });
+
+// Route: Serve customer signup page
 app.get("/signupcus", (req, res) => {
   res.sendFile("/Agriconnect/public/pages/signupcus.html");
 });
+
+// Route: Serve customer login page
 app.get("/logincus", (req, res) => {
   res.sendFile("/Agriconnect/public/pages/logincus.html");
 });
+
+// Route: Serve prediction page
 app.get("/predict", (req, res) => {
   res.sendFile("/Agriconnect/public/pages/prediction.html");
 });
+
+// Route: Serve symptom upload page
 app.get("/upload", (req, res) => {
   res.sendFile("/Agriconnect/public/pages/symptom.html");
 });
-//starting server
+
+// Start the server and listen on the defined port
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+
+// Default route: Serve the index page
 app.get("/", (req, res) => {
   res.sendFile("/Agriconnect/public/pages/index.html");
 });
