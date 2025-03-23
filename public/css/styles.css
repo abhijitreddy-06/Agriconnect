@@ -204,6 +204,12 @@ header {
   .dropdown button {
     width: 6rem;
   }
+    .dropdown1 button {
+    width: 5rem;
+  }
+      .dropdown2 button {
+    width: 2rem;
+  }
   .login-btn button {
     width: 5rem;
   }

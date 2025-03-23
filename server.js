@@ -148,81 +148,7 @@ app.post("/login", async (req, res) => {
   }
 });
 
-// Market-related code for handling file uploads and product insertion
 
-// Define the upload directory path for product images
-const uploadDir = path.join(__dirname, "public", "uploads");
-// Check if the upload directory exists; if not, create it
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-// Configure multer storage settings for handling file uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, "public", "uploads"));
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
-  },
-});
-const upload = multer({ storage });
-
-// Route: Handle product submission with file upload
-app.post("/api/products", upload.single("productImage"), async (req, res) => {
-  // Extract product details from the request body
-  const {
-    productName,
-    productPrice,
-    productQuantity,
-    productQuality,
-    productKg,
-    productDescription,
-    contactNumber,
-  } = req.body;
-  // Determine the image path if a file was uploaded
-  const imagePath = req.file ? "/uploads/" + req.file.filename : "";
-
-  try {
-    // Define maximum allowed values for product quantity and price
-    const maxAllowedKg = 2000;
-    const maxAllowedPrice = 20000;
-    // Validate product quantity
-    if (req.body.productKg > maxAllowedKg) {
-      return res.send(
-        `<script>alert("Please enter a reasonable quantity. Max allowed: 2000 kg per listing."); window.location.href='/sell';</script>`
-      );
-    } else if (req.body.productPrice > maxAllowedPrice) {
-      // Validate product price
-      return res.send(
-        `<script>alert("Please enter a reasonable Price. Max allowed: ₹20000  per listing."); window.location.href='/sell';</script>`
-      );
-    } else {
-      // Insert the product details into the database
-      const insertQuery = `
-      INSERT INTO products (product_name, price, quantity, quality, kg, description, contact_number, image)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-      RETURNING id
-    `;
-      const values = [
-        productName,
-        productPrice,
-        productQuantity,
-        productQuality,
-        productKg,
-        productDescription,
-        contactNumber,
-        imagePath,
-      ];
-      await db.query(insertQuery, values);
-      // Redirect to the farmer market page after successful insertion
-      res.redirect("/pages/farmer-market.html");
-    }
-  } catch (error) {
-    console.error("Error inserting product:", error);
-    res.status(500).send("Server error");
-  }
-});
 
 // Route: Customer signup handling
 app.post("/signupcus", async (req, res) => {
@@ -318,6 +244,95 @@ app.post("/logincus", async (req, res) => {
   } catch (err) {
     console.error("Login Error:", err);
     res.status(500).send("Server error, please try again.");
+  }
+});
+
+
+// Market-related code for handling file uploads and product insertion
+const uploadDir = path.join(__dirname, "public", "uploads");
+// Check if the upload directory exists; if not, create it
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+// Configure multer storage settings for handling file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, uploadDir);
+  },
+  filename: (req, file, cb) => {
+    // Example: "1679509123456.jpg"
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
+const upload = multer({ storage });
+
+// Route: Handle product submission with file upload
+app.post("/api/products", upload.single("productImage"), async (req, res) => {
+  // Extract product details from the request body
+  const {
+    productName,
+    productPrice,
+    productQuantity,
+    productQuality,
+    productDescription,
+    contactNumber,
+    priceCurrency,
+    quantityUnit,
+  } = req.body;
+
+  // Determine the image path if a file was uploaded
+  const imagePath = req.file ? "/uploads/" + req.file.filename : "";
+
+  try {
+    // Parse the price and quantity as floats (assuming your DB columns are numeric)
+    const parsedPrice = parseFloat(productPrice);
+    const parsedQuantity = parseFloat(productQuantity);
+
+    // Define maximum allowed values for product quantity and price
+    const maxAllowedQuantity = 2000; // e.g., 2000 units
+    const maxAllowedPrice = 20000; // e.g., ₹20000
+
+    // Validate product quantity
+    if (parsedQuantity > maxAllowedQuantity) {
+      return res.send(
+        `<script>alert("Please enter a reasonable quantity. Max allowed: ${maxAllowedQuantity} per listing."); window.location.href='/sell';</script>`
+      );
+    }
+    // Validate product price
+    else if (parsedPrice > maxAllowedPrice) {
+      return res.send(
+        `<script>alert("Please enter a reasonable price. Max allowed: ₹${maxAllowedPrice} per listing."); window.location.href='/sell';</script>`
+      );
+    } else {
+      // Insert the product details into the database
+      const insertQuery = `
+        INSERT INTO products
+          (product_name, price, quantity, quality, description, contact_number, image, currency, quantity_unit)
+        VALUES
+          ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        RETURNING id;
+      `;
+      const values = [
+        productName,
+        parsedPrice,
+        parsedQuantity,
+        productQuality,
+        productDescription,
+        contactNumber,
+        imagePath,
+        priceCurrency, // "₹" or "$"
+        quantityUnit, // "kilogram" or "gram"
+      ];
+
+      await db.query(insertQuery, values);
+
+      // Redirect to the farmer market page after successful insertion
+      res.redirect("/pages/farmer-market.html");
+    }
+  } catch (error) {
+    console.error("Error inserting product:", error);
+    res.status(500).send("Server error");
   }
 });
 

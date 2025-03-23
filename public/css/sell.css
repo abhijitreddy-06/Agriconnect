@@ -1,165 +1,162 @@
-:root {
-  --primary-color: #228b22;
-  --secondary-color: #1e7a1e;
-  --accent-color: #ffd700;
-  --gradient-bg: linear-gradient(135deg, #f7f7f7 0%, #e8f5e9 100%);
-  --input-spacing: 1.5rem;
-}
+    :root {
+        --primary: #2E7D32;
+        --secondary: #81C784;
+        --accent: #FFD54F;
+        --background: #F5F5F5;
+        --text: #212121;
+    }
 
-body {
-  font-family: 'Segoe UI', system-ui, sans-serif;
-  background: var(--gradient-bg);
-  margin: 0;
-  padding: 2rem 0;
-  min-height: 100vh;
-}
+    body {
+        font-family: 'Inter', system-ui, sans-serif;
+        background: var(--background);
+        margin: 0;
+        padding: 2rem;
+        color: var(--text);
+    }
 
-.container {
-  max-width: 600px;
-  margin: 2rem auto;
-  padding: 2rem;
-  background: #ffffff; /* Changed to solid white */
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
-}
+    .container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 2.5rem;
+        background: white;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+        border-radius: 0;
+    }
 
-.container:hover {
-  transform: translateY(-5px);
-}
+    .form-header {
+        text-align: center;
+        margin-bottom: 2.5rem;
+        position: relative;
+    }
 
-h1 {
-  text-align: center;
-  color: var(--primary-color);
-  font-size: 2.5rem;
-  margin-bottom: 2rem;
-  position: relative;
-}
+    .form-header h1 {
+        font-size: 2.2rem;
+        color: var(--primary);
+        margin-bottom: 1rem;
+    }
 
-h1::after {
-  content: '';
-  position: absolute;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60px;
-  height: 3px;
-  background: var(--accent-color);
-}
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
 
-.form-group {
-  position: relative;
-  margin-bottom: var(--input-spacing);
-}
+    .form-group {
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
 
-form label {
-  display: block;
-  margin: 0 0 0.8rem 0.2rem;
-  font-weight: 600;
-  color: #444;
-  transition: all 0.3s ease;
-}
+    label {
+        display: block;
+        margin-bottom: 0.6rem;
+        font-weight: 500;
+        color: #424242;
+    }
 
-form input,
-form textarea,
-form select {
-  width: 100%;
-  padding: 1rem;
-  border: 2px solid #e0e0e0;
-  border-radius: 12px;
-  box-sizing: border-box;
-  transition: all 0.3s ease;
-  font-size: 1rem;
-  background: #f8f8f8;
-  margin-bottom: 0.5rem;
-}
+    .input-field {
+        width: 100%;
+        padding: 0.9rem 1.2rem;
+        border: 2px solid #E0E0E0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+        background: #FAFAFA;
+    }
 
-form input:focus,
-form textarea:focus,
-form select:focus {
-  outline: none;
-  border-color: var(--primary-color);
-  background: #fff;
-  box-shadow: 0 0 0 3px rgba(34, 139, 34, 0.1);
-}
+    .input-field:focus {
+        outline: none;
+        border-color: var(--primary);
+        background: white;
+        box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+    }
 
-form input:hover,
-form textarea:hover,
-form select:hover {
-  border-color: #c0c0c0;
-}
+    .unit-toggle {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+    }
 
-form button {
-  width: 100%;
-  padding: 1rem;
-  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-  color: white;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  transition: all 0.3s ease;
-}
+    .toggle-btn {
+        padding: 0.5rem 1rem;
+        border: 2px solid #E0E0E0;
+        border-radius: 6px;
+        background: white;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
 
-form button:hover {
-  background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(34, 139, 34, 0.3);
-}
+    .toggle-btn.active {
+        border-color: var(--primary);
+        background: var(--primary);
+        color: white;
+    }
 
-form button:active {
-  transform: translateY(0);
-}
+    .image-source {
+        display: flex;
+        gap: 1rem;
+        margin: 1rem 0;
+    }
 
-@media (max-width: 768px) {
-  :root {
-    --input-spacing: 1.2rem;
-  }
-  
-  .container {
-    max-width: 90%;
-    padding: 1.5rem;
-    border-radius: 15px;
-  }
+    .source-btn {
+        flex: 1;
+        padding: 1rem;
+        border: 2px solid #E0E0E0;
+        border-radius: 8px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
 
-  h1 {
-    font-size: 2rem;
-  }
+    .source-btn.active {
+        border-color: var(--primary);
+        background: rgba(46, 125, 50, 0.1);
+    }
 
-  form input,
-  form textarea,
-  form select,
-  form button {
-    padding: 0.8rem;
-  }
-}
+    .submit-btn {
+        width: 100%;
+        padding: 1.2rem;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
 
-@media (max-width: 480px) {
-  :root {
-    --input-spacing: 1rem;
-  }
+    .submit-btn:hover {
+        background: #1B5E20;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(46, 125, 50, 0.2);
+    }
 
-  .container {
-    max-width: 95%;
-    padding: 1rem;
-    border-radius: 12px;
-  }
+    @media (max-width: 768px) {
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .container {
+            padding: 1.5rem;
+            margin: 1rem;
+        }
+        
+        .form-header h1 {
+            font-size: 1.8rem;
+        }
+    }
 
-  h1 {
-    font-size: 1.75rem;
-  }
-
-  form input,
-  form textarea,
-  form select,
-  form button {
-    padding: 0.7rem;
-    font-size: 14px;
-  }
-
-  form button {
-    font-size: 14px;
-  }
-}
+    @media (max-width: 480px) {
+        body {
+            padding: 1rem;
+        }
+        
+        .input-field {
+            padding: 0.8rem;
+        }
+        
+        .unit-toggle {
+            flex-wrap: wrap;
+        }
+    }

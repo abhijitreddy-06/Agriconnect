@@ -5,12 +5,12 @@ const navLinks = document.querySelector(".nav-links");
 hamburger.addEventListener("click", () => {
   navLinks.classList.toggle("active");
 });
-//dropdown button
-function toggleDropdown() {
-  const dropdownContent = document.querySelector(".dropdown-content");
+function toggleDropdown(button) {
+  const dropdownContent = button.parentElement.querySelector(".dropdown-content");
   dropdownContent.style.display =
     dropdownContent.style.display === "block" ? "none" : "block";
 }
+
 
 // Close the dropdown if the user clicks outside
 window.onclick = function (event) {
@@ -23,13 +23,5 @@ window.onclick = function (event) {
     });
   }
 };
-//password eye
-function togglePassword() {
-  const passwordInput = document.getElementById("password");
-  if (passwordInput.type === "password") {
-    passwordInput.type = "text";
-  } else {
-    passwordInput.type = "password";
-  }
-}
+
 

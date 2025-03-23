@@ -36,19 +36,25 @@
                 <li><a href="/">Log-out</a></li>
             </ul>
 
-            <!-- Dropdown for language selection -->
-            <div class="dropdown">
-                <!-- Button that triggers the language dropdown -->
-                <button class="dropbtn" onclick="toggleDropdown()">Language</button>
-                <!-- Dropdown content with available languages -->
-                <div class="dropdown-content">
-                    <a href="">English</a>
-                    <a href="">Kannada</a>
-                </div>
-            </div>
+<!-- Dropdown for language selection -->
+<div class="dropdown">
+    <!-- Button that triggers the language dropdown -->
+    <button class="dropbtn" onclick="toggleDropdown(this)">Language</button>
+    <!-- Dropdown content with available languages -->
+    <div class="dropdown-content">
+        <a href="">English</a>
+        <a href="">Kannada</a>
+    </div>
+    </div>
 
-            <!-- Profile button -->
-            <button class="login-btn" onclick="window.location.href = '/profile' ">Profile</button>
+<!-- Profile button -->
+<div class="dropdown dropdown1">
+    <button class="dropbtn" onclick="toggleDropdown(this)">Profile</button>
+    <div class="dropdown-content">
+        <a href="">My Details</a>
+        <a href="">My Cart</a>
+    </div>
+</div>
 
             <!-- Hamburger menu for mobile devices -->
             <div class="hamburger">

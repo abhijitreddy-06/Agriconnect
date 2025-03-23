@@ -8,13 +8,13 @@
     <title>Farmer Market</title>
 
     <!-- Link to global styles -->
-    <link rel="stylesheet" href="/css/styles.css">
+    <!-- <link rel="stylesheet" href="/css/styles.css"> -->
     <!-- Link to marketplace specific styles -->
     <link rel="stylesheet" href="/css/market.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
         integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-            <link rel="stylesheet" href="/css/loading.css">
+    <link rel="stylesheet" href="/css/loading.css">
 </head>
 
 <body>
@@ -23,14 +23,12 @@
     </div>
     <!-- Header section with navigation -->
     <header>
-       
         <nav class="navbar">
             <!-- Logo of AgriConnect -->
             <div class="logo">AgriConnect</div>
             <!-- Navigation links -->
             <ul class="nav-links">
                 <li><a href="/homecus">🏠Home</a></li>
-                
                 <li><a href="/marketcus">🛒Farmers’ Market</a></li>
             </ul>
             <div class="search-container">
@@ -46,16 +44,25 @@
                     <input type="button" value="Search" class="search-button">
                 </div>
             </div>
-            <!-- Dropdown for language selection -->
-            <div class="dropdown">
-                <button class="dropbtn" onclick="toggleDropdown()">Language</button>
-                <div class="dropdown-content">
-                    <a href="">English</a>
-                    <a href="">Kannada</a>
-                </div>
-            </div>
-            <!-- Sign-up button -->
-            <button class="login-btn" onclick="window.location.href='/whichusers'">Sign-up</button>
+<!-- Dropdown for language selection -->
+<div class="dropdown">
+    <!-- Button that triggers the language dropdown -->
+    <button class="dropbtn" onclick="toggleDropdown(this)">Language</button>
+    <!-- Dropdown content with available languages -->
+    <div class="dropdown-content">
+        <a href="">English</a>
+        <a href="">Kannada</a>
+    </div>
+</div>
+
+<!-- Profile button -->
+<div class="dropdown dropdown2">
+    <button class="dropbtn" onclick="toggleDropdown(this)">Profile</button>
+    <div class="dropdown-content">
+        <a href="">My Details</a>
+        <a href="">My Cart</a>
+    </div>
+</div>
             <!-- Hamburger menu for mobile navigation -->
             <div class="hamburger">
                 <span class="bar"></span>
@@ -64,6 +71,7 @@
             </div>
         </nav>
     </header>
+
     <div class="hero-section">
         <div class="hero-text">
             <h1>Farmer Bazaar is One of India’s Largest Marketplace.</h1>
@@ -72,6 +80,7 @@
         <!-- Replace /images/farmer-bazaar.jpg with your actual banner image path -->
         <img src="/images/farmer-removebg-preview.png" alt="Farmer Bazaar" class="hero-image">
     </div>
+
     <!-- Main container for marketplace content -->
     <div class="container">
         <!-- Marketplace section where product cards will be dynamically injected -->
@@ -95,8 +104,6 @@
             <p id="modalQuantity"></p>
             <!-- Product quality -->
             <p id="modalQuality"></p>
-            <!-- Product weight in kg -->
-            <p id="modalKg"></p>
             <!-- Product description -->
             <p id="modalDescription"></p>
             <!-- Contact details for the product -->
@@ -128,9 +135,11 @@
 
         // Close search when clicking outside
         document.addEventListener('click', (e) => {
-            if (window.innerWidth <= 640 &&
+            if (
+                window.innerWidth <= 640 &&
                 !inputGroup.contains(e.target) &&
-                inputGroup.classList.contains('active')) {
+                inputGroup.classList.contains('active')
+            ) {
                 inputGroup.classList.remove('active');
             }
         });
@@ -160,12 +169,15 @@
             products.forEach(product => {
                 const card = document.createElement('div');
                 card.className = 'product-card';
+
                 // Clicking the card opens a modal with full product details.
                 card.onclick = () => openModal(product);
+
+                // Some DB fields might be named differently, ensure you match them exactly
                 card.innerHTML = `
           <img src="${product.image}" alt="${product.product_name}">
           <h3>${product.product_name}</h3>
-          <div class="price">₹${product.price}</div>
+          <div class="price">${product.currency ?? '₹'}${product.price}</div>
           <div class="reviews">Quality: ${product.quality}</div>
           <button class="add-to-cart-btn" onclick="event.stopPropagation(); addToCart('${product.product_name}')">Add to Cart</button>
         `;
@@ -177,10 +189,9 @@
         function openModal(product) {
             document.getElementById('modalImage').src = product.image;
             document.getElementById('modalName').textContent = product.product_name;
-            document.getElementById('modalPrice').textContent = 'Price: ₹' + product.price;
-            document.getElementById('modalQuantity').textContent = 'Quantity: ' + product.quantity;
+            document.getElementById('modalPrice').textContent = 'Price: ' + (product.currency ?? '₹') + product.price;
+            document.getElementById('modalQuantity').textContent = 'Quantity: ' + product.quantity + ' (' + (product.quantity_unit || '') + ')';
             document.getElementById('modalQuality').textContent = 'Quality: ' + product.quality;
-            document.getElementById('modalKg').textContent = 'Weight (kg): ' + product.kg;
             document.getElementById('modalDescription').textContent = 'Description: ' + product.description;
             document.getElementById('modalContact').textContent = 'Contact: ' + product.contact_number;
             document.getElementById('productModal').style.display = 'block';

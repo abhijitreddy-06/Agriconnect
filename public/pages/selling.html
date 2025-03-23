@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="/css/sell.css">
     <!-- Link to global styles -->
     <link rel="stylesheet" href="/css/styles.css">
-                <link rel="stylesheet" href="/css/loading.css">
+    <link rel="stylesheet" href="/css/loading.css">
 </head>
 
 <body>
@@ -21,7 +21,6 @@
     <!-- Background styling element -->
     <div class="body-bg"></div>
     <header>
-
         <!-- Navigation bar -->
         <nav class="navbar">
             <!-- Site logo -->
@@ -30,7 +29,7 @@
             <ul class="nav-links">
                 <li><a href="/">🏠Home</a></li>
                 <li><a href="/whichusers">🌾Farming Guide</a></li>
-                <li><a href="/whichusers">🌿Check Plant Health </a></li>
+                <li><a href="/whichusers">🌿Check Plant Health</a></li>
                 <li><a href="/whichusers">🛒Farmers’ Market</a></li>
             </ul>
             <!-- Language selection dropdown -->
@@ -51,69 +50,137 @@
             </div>
         </nav>
     </header>
-    <!-- Main container for product submission -->
+
     <div class="container">
-        <h1>Sell Your Product</h1>
-        <!-- Form to add a new product -->
-        <form action="/api/products" method="POST" enctype="multipart/form-data">
-            <!-- Product name input -->
-            <label for="productName">Product Name:</label>
-            <input type="text" id="productName" name="productName" required>
+        <div class="form-header">
+            <h1>Sell Farm Products</h1>
+            <p>Reach buyers directly with your agricultural produce</p>
+        </div>
 
-            <!-- Product price input -->
-            <label for="productPrice">Price (₹):</label>
-            <input type="number" id="productPrice" name="productPrice" required>
+        <form id="productForm" action="/api/products" method="POST" enctype="multipart/form-data">
+            <div class="form-grid">
+                <!-- Product Details -->
+                <div class="form-group">
+                    <label for="productName">Product Name</label>
+                    <input type="text" id="productName" name="productName" class="input-field" required>
+                </div>
 
-            <!-- Product quantity input -->
-            <label for="productQuantity">Quantity (Units):</label>
-            <input type="number" id="productQuantity" name="productQuantity" required>
+                <!-- Price Section -->
+                <div class="form-group">
+                    <label for="productPrice">Price</label>
+                    <div class="input-group">
+                        <input type="number" id="productPrice" name="productPrice" class="input-field" step="0.01"
+                            required>
+                        <div class="unit-toggle">
+                            <button type="button" class="toggle-btn active" data-unit="₹">₹ Rupees</button>
+                            <button type="button" class="toggle-btn" data-unit="$">$ USD</button>
+                        </div>
+                    </div>
+                    <!-- Hidden input to store price currency -->
+                    <input type="hidden" id="priceCurrency" name="priceCurrency" value="₹">
+                </div>
 
-            <!-- Product quality selector -->
-            <label for="productQuality">Quality:</label>
-            <select id="productQuality" name="productQuality" required>
-                <option value="High">High</option>
-                <option value="Medium">Medium</option>
-                <option value="Low">Low</option>
-            </select>
+                <!-- Quantity Section -->
+                <div class="form-group">
+                    <label for="productQuantity">Quantity</label>
+                    <div class="input-group">
+                        <input type="number" id="productQuantity" name="productQuantity" class="input-field" step="0.01"
+                            required>
+                        <div class="unit-toggle">
+                            <button type="button" class="toggle-btn active" data-unit="kilogram">Kilograms</button>
+                            <button type="button" class="toggle-btn" data-unit="gram">Grams</button>
+                        </div>
+                    </div>
+                    <!-- Hidden input to store quantity unit -->
+                    <input type="hidden" id="quantityUnit" name="quantityUnit" value="kilogram">
+                </div>
 
-            <!-- Product weight input -->
-            <label for="productKg">Weight (kg):</label>
-            <input type="number" id="productKg" name="productKg" required>
+                <!-- Quality Selector -->
+                <div class="form-group">
+                    <label for="productQuality">Quality Grade</label>
+                    <select id="productQuality" name="productQuality" class="input-field" required>
+                        <option value="Premium">Premium Grade</option>
+                        <option value="Standard">Standard Grade</option>
+                        <option value="Economy">Economy Grade</option>
+                    </select>
+                </div>
+            </div>
 
-            <!-- Product description input -->
-            <label for="productDescription">Description:</label>
-            <textarea id="productDescription" name="productDescription" required></textarea>
+            <!-- Image Upload Section -->
+            <div class="form-group">
+                <label>Add Product Photos</label>
+                <div class="image-source">
+                    <div class="source-btn active" data-source="gallery">📁 From Gallery</div>
+                    <div class="source-btn" data-source="camera">📸 Take Photo</div>
+                </div>
+                <input type="file" id="productImage" name="productImage" class="input-field" accept="image/*" multiple
+                    style="margin-top: 1rem;" required>
+            </div>
 
-            <!-- Contact number input -->
-            <label for="contactNumber">Contact Number:</label>
-            <input type="tel" id="contactNumber" name="contactNumber" required>
+            <!-- Additional Info -->
+            <div class="form-group">
+                <label for="productDescription">Product Description</label>
+                <textarea id="productDescription" name="productDescription" class="input-field" rows="4"
+                    placeholder="Describe your product..." required></textarea>
+            </div>
 
-            <!-- Product image upload (accepts images from camera or folder) -->
-            <label for="productImage">Product Image (Camera or Folder):</label>
-            <input type="file" id="productImage" name="productImage" accept="image/*" capture="environment" required>
+            <!-- Contact Information -->
+            <div class="form-group">
+                <label for="contactNumber">Contact Number</label>
+                <input type="tel" id="contactNumber" name="contactNumber" class="input-field" required>
+            </div>
 
-            <!-- Submit button for the form -->
-            <button type="submit">Submit Product</button>
+            <button type="submit" class="submit-btn">List Product →</button>
         </form>
     </div>
+
     <!-- Footer section -->
     <footer class="footer">
         <p>&copy; 2025 AgriConnect. All rights reserved.</p>
     </footer>
-    <!-- External JavaScript file -->
+
+    <!-- External JavaScript files -->
     <script type="text/javascript" src="/js/script.js"></script>
-    <!-- Inline script (commented out) for form-group focus effect -->
-    <!-- 
+    <script type="text/javascript" src="/js/loading.js"></script>
     <script>
-        document.querySelectorAll('.form-group').forEach(group => {
-            const input = group.querySelector('input, textarea, select');
-            input.addEventListener('focus', () => group.classList.add('focused'));
-            input.addEventListener('blur', () => {
-                if (!input.value) group.classList.remove('focused');
+        // Toggle Button Logic for Price and Quantity
+        document.querySelectorAll('.unit-toggle').forEach(group => {
+            group.querySelectorAll('.toggle-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    // Remove active class from siblings and add to clicked button
+                    group.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+
+                    // Update corresponding hidden input based on the group context
+                    const formGroup = button.closest('.form-group');
+                    if (formGroup.querySelector('#productPrice')) {
+                        // Price unit toggle
+                        document.getElementById('priceCurrency').value = button.dataset.unit;
+                    } else if (formGroup.querySelector('#productQuantity')) {
+                        // Quantity unit toggle
+                        document.getElementById('quantityUnit').value = button.dataset.unit;
+                    }
+                });
+            });
+        });
+
+        // Image Source Selection Logic
+        document.querySelectorAll('.source-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active from all source buttons and add to clicked one
+                document.querySelectorAll('.source-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                // Update file input capture attribute based on source selection
+                const fileInput = document.getElementById('productImage');
+                if (btn.dataset.source === 'camera') {
+                    fileInput.setAttribute('capture', 'environment');
+                } else {
+                    fileInput.removeAttribute('capture');
+                }
             });
         });
     </script>
-    -->
-        <script type="text/javascript" src="/js/loading.js"></script>
 </body>
+
 </html>
