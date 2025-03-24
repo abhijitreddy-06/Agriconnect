@@ -573,12 +573,7 @@ app.get("/healthcheck", (req, res) => {
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "pages", "index.html"));
 });
-console.log("Static files served from:", path.join(__dirname, "public"));
-// Fallback error handler for unmatched routes
-app.use((req, res, next) => {
-  console.error("No route matched for:", req.originalUrl);
-  res.status(404).send("Not Found");
-});
+
 
 /************************************************************************
  *                        START THE SERVER
