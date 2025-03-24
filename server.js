@@ -1,4 +1,8 @@
 // server.js
+
+/************************************************************************
+ *                           DEPENDENCIES
+ ************************************************************************/
 import express from "express";
 import pg from "pg";
 import bodyParser from "body-parser";
@@ -13,55 +17,63 @@ import fetch from "node-fetch";
 import https from "https";
 import { Credentials, Translator } from "@translated/lara";
 
-// Load environment variables from .env file
+/************************************************************************
+ *                  LOAD ENVIRONMENT VARIABLES (.env)
+ ************************************************************************/
+// Load environment variables from a .env file
 dotenv.config();
 
-// Initialize express app
-const app = express();
+/************************************************************************
+ *                        EXPRESS APP SETUP
+ ************************************************************************/
+const app = express(); // Create an Express application
 
-// Use the PORT provided by Railway or default to 3000
+// Use the PORT provided by Railway (via process.env.PORT) or default to 3000 for local development.
 const port = process.env.PORT || 3000;
 
-// File path helpers
+/************************************************************************
+ *                   FILE PATH HELPERS
+ ************************************************************************/
+// These helpers provide the current file and directory name, which is useful for serving static files.
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Serve static files from the 'public' folder
-// This makes everything in 'public' directly accessible via the browser
+/************************************************************************
+ *                    SERVE STATIC FILES
+ ************************************************************************/
+// Serve files from the "public" directory so that assets like HTML, CSS, and JS are accessible
 app.use(express.static(path.join(__dirname, "public")));
 
-// If you have an "uploads" folder inside 'public', you don't need a separate static,
-// but if you store uploads outside 'public', then you do:
+// Serve files from the "uploads" directory (if uploads are stored outside of "public")
 app.use("/uploads", express.static("uploads"));
 
-// Configure body parser
+/************************************************************************
+ *                  CONFIGURE BODY PARSING
+ ************************************************************************/
+// Allow Express to parse JSON and URL-encoded data in incoming requests
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// ---------------------------------------------------
-// 1) PostgreSQL Connection
-// ---------------------------------------------------
-// Option A: Using single DATABASE_URL (recommended on Railway)
+/************************************************************************
+ *                     POSTGRESQL CONNECTION
+ ************************************************************************/
 const { Client } = pg;
+
+// Debug: Log the DATABASE_URL to ensure it's correctly set
+console.log("DATABASE_URL:", process.env.DATABASE_URL);
+
+/*
+  Create a new PostgreSQL client using the DATABASE_URL from your environment.
+  If your Railway database does not require SSL, we set ssl: false.
+  If SSL is required, change ssl: false to:
+    ssl: { rejectUnauthorized: false }
+*/
 const db = new Client({
   connectionString: process.env.DATABASE_URL,
-  // If you're on Railway, often you need SSL set like below:
-  ssl: {
-    rejectUnauthorized: false,
-  },
+  ssl: false,
 });
 
-// Option B: If you insist on separate variables, remove "localhost"
-// and use the actual host from Railway. Example:
-// const db = new Client({
-//   user: process.env.USER_NAME,
-//   host: process.env.DB_HOST, // e.g. "containers-us-west-XX.railway.app"
-//   database: process.env.DATABASE_NAME,
-//   password: process.env.DATABASE_PASSWORD,
-//   port: process.env.DB_PORT, // e.g. 5432
-//   ssl: { rejectUnauthorized: false },
-// });
-
+// Connect to the PostgreSQL database and log the connection status
 db.connect((err) => {
   if (err) {
     console.error("Error connecting to PostgreSQL:", err);
@@ -70,14 +82,17 @@ db.connect((err) => {
   }
 });
 
-// ---------------------------------------------------
-// 2) ROUTES
-// ---------------------------------------------------
-
+/************************************************************************
+ *                        ROUTES - AUTHENTICATION
+ ************************************************************************/
 // ----------------- SIGNUP / LOGIN (Farmer) -----------------
+
+// Farmer Signup Route
 app.post("/signup", async (req, res) => {
   try {
     const { username, phone, password } = req.body;
+
+    // Validate input fields
     if (!username || !phone || !password) {
       return res.send(
         `<script>alert("All fields are required."); window.location.href='/signup';</script>`
@@ -93,6 +108,8 @@ app.post("/signup", async (req, res) => {
         `<script>alert("Password must be more than 6 characters."); window.location.href='/signup';</script>`
       );
     }
+
+    // Check if a user with the same phone number already exists
     const existingUser = await db.query(
       "SELECT * FROM signup WHERE phone_no = $1",
       [phone]
@@ -103,14 +120,17 @@ app.post("/signup", async (req, res) => {
       );
     }
 
+    // Hash the password before storing in the database
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Insert the new user record into the signup table
     const insertQuery = `
       INSERT INTO signup (username, phone_no, password)
       VALUES ($1, $2, $3);
     `;
     await db.query(insertQuery, [username, phone, hashedPassword]);
 
-    // Use path.join to serve the file
+    // Send the homepage for farmers after successful signup
     res.sendFile(path.join(__dirname, "public", "pages", "homepage.html"));
   } catch (err) {
     console.error("Signup Error:", err);
@@ -120,9 +140,11 @@ app.post("/signup", async (req, res) => {
   }
 });
 
+// Farmer Login Route
 app.post("/login", async (req, res) => {
   const { phone, password } = req.body;
   try {
+    // Look up the user by phone number
     const result = await db.query("SELECT * FROM signup WHERE phone_no = $1", [
       phone,
     ]);
@@ -135,6 +157,7 @@ app.post("/login", async (req, res) => {
       `);
     }
     const user = result.rows[0];
+    // Compare the provided password with the stored hashed password
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (isMatch) {
@@ -154,9 +177,12 @@ app.post("/login", async (req, res) => {
 });
 
 // ----------------- SIGNUP / LOGIN (Customer) -----------------
+
+// Customer Signup Route
 app.post("/signupcus", async (req, res) => {
   try {
     const { username, phone, password } = req.body;
+    // Validate input fields
     if (!username || !phone || !password) {
       return res.send(
         `<script>alert("All fields are required."); window.location.href='/signupcus';</script>`
@@ -172,6 +198,7 @@ app.post("/signupcus", async (req, res) => {
         `<script>alert("Password must be more than 6 characters."); window.location.href='/signupcus';</script>`
       );
     }
+    // Check if the customer already exists
     const existingUser = await db.query(
       "SELECT * FROM cus_signup WHERE phone_no = $1",
       [phone]
@@ -181,13 +208,16 @@ app.post("/signupcus", async (req, res) => {
         `<script>alert("Account already exists."); window.location.href='/signupcus';</script>`
       );
     }
+    // Hash the password for secure storage
     const hashedPassword = await bcrypt.hash(password, 10);
+    // Insert new customer details into the cus_signup table
     const insertQuery = `
       INSERT INTO cus_signup (username, phone_no, password)
       VALUES ($1, $2, $3);
     `;
     await db.query(insertQuery, [username, phone, hashedPassword]);
 
+    // Send the customer homepage after signup
     res.sendFile(path.join(__dirname, "public", "pages", "homepage_cus.html"));
   } catch (err) {
     console.error("Signup Error:", err);
@@ -197,9 +227,11 @@ app.post("/signupcus", async (req, res) => {
   }
 });
 
+// Customer Login Route
 app.post("/logincus", async (req, res) => {
   const { phone, password } = req.body;
   try {
+    // Look up the customer by phone number
     const result = await db.query(
       "SELECT * FROM cus_signup WHERE phone_no = $1",
       [phone]
@@ -213,6 +245,7 @@ app.post("/logincus", async (req, res) => {
       `);
     }
     const user = result.rows[0];
+    // Compare the provided password with the stored hashed password
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (isMatch) {
@@ -231,24 +264,28 @@ app.post("/logincus", async (req, res) => {
   }
 });
 
-// ---------------------------------------------------
-// 3) FILE UPLOADS / PRODUCT LISTINGS
-// ---------------------------------------------------
+/************************************************************************
+ *                   FILE UPLOADS & PRODUCT LISTINGS
+ ************************************************************************/
 const uploadDir = path.join(__dirname, "public", "uploads");
+// Create the uploads directory if it doesn't exist
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
+
+// Configure multer storage for file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
+    // Create a unique filename using the current timestamp
     cb(null, Date.now() + path.extname(file.originalname));
   },
 });
 const upload = multer({ storage });
 
-// Insert product data
+// Route to insert product data into the "products" table
 app.post("/api/products", upload.single("productImage"), async (req, res) => {
   const {
     productName,
@@ -263,9 +300,11 @@ app.post("/api/products", upload.single("productImage"), async (req, res) => {
   const imagePath = req.file ? "/uploads/" + req.file.filename : "";
 
   try {
+    // Convert price and quantity to float numbers
     const parsedPrice = parseFloat(productPrice);
     const parsedQuantity = parseFloat(productQuantity);
 
+    // Validate that the entered price and quantity are within allowed limits
     const maxAllowedQuantity = 2000;
     const maxAllowedPrice = 20000;
 
@@ -278,6 +317,7 @@ app.post("/api/products", upload.single("productImage"), async (req, res) => {
         `<script>alert("Max allowed price: ₹${maxAllowedPrice}"); window.location.href='/sell';</script>`
       );
     } else {
+      // Insert the product into the "products" table
       const insertQuery = `
         INSERT INTO products
           (product_name, price, quantity, quality, description, contact_number, image, currency, quantity_unit)
@@ -305,7 +345,7 @@ app.post("/api/products", upload.single("productImage"), async (req, res) => {
   }
 });
 
-// Fetch all products
+// Route to fetch all products from the "products" table
 app.get("/api/products", async (req, res) => {
   try {
     const result = await db.query("SELECT * FROM products ORDER BY id DESC");
@@ -316,9 +356,10 @@ app.get("/api/products", async (req, res) => {
   }
 });
 
-// ---------------------------------------------------
-// 4) SYMPTOM PREDICTION / GEMINI AI
-// ---------------------------------------------------
+/************************************************************************
+ *                   SYMPTOM PREDICTION / GEMINI AI
+ ************************************************************************/
+// Route to upload images for symptom prediction
 app.post("/upload", upload.single("imageInput"), async (req, res) => {
   try {
     const { description, language } = req.body;
@@ -334,6 +375,7 @@ app.post("/upload", upload.single("imageInput"), async (req, res) => {
   }
 });
 
+// Route to analyze the uploaded image using Gemini AI
 app.post("/analyze", async (req, res) => {
   try {
     const { predictionId } = req.body;
@@ -346,18 +388,22 @@ app.post("/analyze", async (req, res) => {
         .json({ success: false, error: "Prediction not found" });
     }
     const record = dbResult.rows[0];
+
+    // Use a fixed image URL (change as needed)
     const imageUrl =
       "https://1.bp.blogspot.com/-fr7iwyvZ5t8/Xp082pHa5pI/AAAAAAAABBw/DSrN-yg9Lz4K3OjMzYD5gc_GHurIHvcRgCLcBGAsYHQ/s1600/Leaf%2Bspot%2Bdisease.jpg";
 
     let prompt;
+    // If the image URL is local (not applicable in production), use a fallback prompt
     if (imageUrl.includes("localhost")) {
       prompt = `
-I cannot access local files like the image provided (${imageUrl}). 
+I cannot access local files like the image provided (${imageUrl}).
 [...explanatory fallback prompt...]
 Based on your description "${record.description}", here is some general advice:
 [...further instructions...]
       `;
     } else {
+      // Construct the prompt with the image URL and description from the prediction record
       prompt = `
 Analyze the following image and description:
 Image URL: ${imageUrl}
@@ -370,10 +416,12 @@ Format your answer clearly and concisely.
       `;
     }
 
+    // Define the Gemini AI model and construct the API URL using your API key
     const GEMINI_MODEL = "models/gemini-1.5-pro-002";
     const geminiApiUrl = `https://generativelanguage.googleapis.com/v1/${GEMINI_MODEL}:generateContent?key=${process.env.GEMINI_API_KEY}`;
     const httpsAgent = new https.Agent({ keepAlive: true });
 
+    // Make a POST request to the Gemini AI API with the constructed prompt
     const response = await axios.post(
       geminiApiUrl,
       {
@@ -396,11 +444,13 @@ Format your answer clearly and concisely.
       geminiResponse.candidates[0]?.content?.parts[0]?.text ||
       "No valid response.";
 
+    // Update the prediction record with the details returned by Gemini AI
     await db.query("UPDATE predictions SET gemini_details = $1 WHERE id = $2", [
       responseText,
       predictionId,
     ]);
 
+    // Send back the AI-generated details in the response
     res.json({ success: true, data: { details: responseText } });
   } catch (error) {
     console.error("Error in /analyze:", error.message);
@@ -414,6 +464,7 @@ Format your answer clearly and concisely.
   }
 });
 
+// Route to fetch a prediction record by ID
 app.get("/prediction/:id", async (req, res) => {
   try {
     const query = "SELECT * FROM predictions WHERE id = $1";
@@ -430,59 +481,72 @@ app.get("/prediction/:id", async (req, res) => {
   }
 });
 
-// ---------------------------------------------------
-// 5) PAGE ROUTES (Serving HTML Files)
-// ---------------------------------------------------
+/************************************************************************
+ *                         PAGE ROUTES
+ ************************************************************************/
+// Serve login page
 app.get("/login", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "pages", "login.html"));
 });
 
+// Serve farmer signup page
 app.get("/signup", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "pages", "signUp.html"));
 });
 
+// Serve farmer homepage after login/signup
 app.get("/home", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "pages", "homepage.html"));
 });
 
+// Serve customer homepage after login/signup
 app.get("/homecus", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "pages", "homepage_cus.html"));
 });
 
+// Serve health-related page
 app.get("/health", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "pages", "health.html"));
 });
 
+// Serve selling page for product listings
 app.get("/sell", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "pages", "selling.html"));
 });
 
+// Serve farmer market page
 app.get("/market", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "pages", "farmer-market.html"));
 });
 
+// Serve customer market page
 app.get("/marketcus", (req, res) => {
   res.sendFile(
     path.join(__dirname, "public", "pages", "farmer-market_cus.html")
   );
 });
 
+// Serve page listing different types of users
 app.get("/whichusers", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "pages", "whichusers.html"));
 });
 
+// Serve customer signup page
 app.get("/signupcus", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "pages", "signupcus.html"));
 });
 
+// Serve customer login page
 app.get("/logincus", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "pages", "logincus.html"));
 });
 
+// Serve prediction page
 app.get("/predict", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "pages", "prediction.html"));
 });
 
+// Serve symptom upload page
 app.get("/upload", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "pages", "symptom.html"));
 });
@@ -492,9 +556,10 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "pages", "index.html"));
 });
 
-// ---------------------------------------------------
-// 6) START THE SERVER
-// ---------------------------------------------------
+/************************************************************************
+ *                        START THE SERVER
+ ************************************************************************/
+// Start the Express server and listen on the designated port
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
