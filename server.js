@@ -30,7 +30,7 @@ dotenv.config();
 const app = express(); // Create an Express application
 
 // Use the PORT provided by Railway (via process.env.PORT) or default to 3000 for local development.
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8080;
 
 /************************************************************************
  *                   FILE PATH HELPERS
@@ -573,6 +573,9 @@ app.get("/healthcheck", (req, res) => {
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "pages", "index.html"));
 });
+
+app.get("/healthcheck", (req, res) => res.send("OK"));
+app.get("/favicon.ico", (req, res) => res.status(204).end());
 
 
 /************************************************************************
