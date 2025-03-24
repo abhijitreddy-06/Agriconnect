@@ -7,33 +7,7 @@
   box-sizing: border-box;
 }
 
-/* Body & Global Styles */
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  line-height: 1.6;
-  background: #f4f7f9;
-  color: #333;
-  padding: 1rem;
-}
 
-/* Navbar Styling */
-nav {
-  background: linear-gradient(135deg, #6a11cb, #2575fc);
-  color: #fff;
-  padding: 1.5rem;
-  text-align: center;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-/* Footer Styling */
-footer {
-  background: #fff;
-  color: #555;
-  padding: 1.5rem;
-  text-align: center;
-  border-top: 1px solid #e0e0e0;
-  margin-top: 2rem;
-}
 
 /* Container for Form and Preview */
 .container {
