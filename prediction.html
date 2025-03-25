@@ -5,7 +5,168 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Prediction Details</title>
-    <link rel="stylesheet" href="/symptom.css">
+    <style>/* Modern Reset */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+
+
+/* Container for Form and Preview */
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 2rem;
+  gap: 2rem;
+}
+
+/* Form Styling */
+form {
+  flex: 1 1 300px;
+  background: #fff;
+  padding: 2rem;
+  border-radius: 10px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  transition: transform 0.3s ease;
+}
+
+form:hover {
+  transform: translateY(-5px);
+}
+
+form label {
+  display: block;
+  margin-top: 1rem;
+  font-weight: bold;
+  color: #555;
+}
+
+/* Bigger input boxes and file input with dotted border */
+form input[type="file"],
+form textarea {
+  width: 100%;
+  padding: 1rem;
+  margin-top: 0.5rem;
+  border: 2px dotted #ccc;
+  border-radius: 6px;
+  transition: border-color 0.3s;
+  min-height: 50px;
+}
+
+form input[type="file"]:focus,
+form textarea:focus {
+  border-color: #2575fc;
+  outline: none;
+}
+
+/* Preferred Language Input Styling: Make it bigger */
+form input[type="text"]#language {
+  display: block;
+  width: 100%;
+  padding: 1rem;
+  margin-top: 0.5rem;
+  border: 2px dotted #ccc;
+  border-radius: 6px;
+  transition: border-color 0.3s;
+  min-height: 50px;
+}
+
+form input[type="text"]#language:focus {
+  border-color: #2575fc;
+  outline: none;
+}
+
+/* Speak Button Specific Styling: Forces it to appear on its own line */
+#micButton {
+  display: block;
+  width: 100%;
+  margin-top: 2rem;
+  padding: 0.75rem 1.5rem;
+  background: #2575fc;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.3s ease, transform 0.2s;
+}
+
+#micButton:hover {
+  background: #1e63d1;
+  transform: translateY(-2px);
+}
+
+/* Preview Styling */
+.preview {
+  flex: 1 1 300px;
+  background: #fff;
+  padding: 2rem;
+  border-radius: 10px;
+  text-align: center;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+
+.preview img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+}
+
+.preview img:hover {
+  transform: scale(1.05);
+}
+
+/* Prediction Card Styling (if needed) */
+.prediction-card {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+
+/* Generic Button Styling (if needed) */
+button {
+  margin-top: 1.5rem;
+  padding: 0.75rem 1.5rem;
+  background: #2575fc;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.3s ease, transform 0.2s;
+}
+
+button:hover {
+  background: #1e63d1;
+  transform: translateY(-2px);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  form,
+  .preview {
+    width: 90%;
+  }
+}
+</style>
                 <link rel="stylesheet" href="/loading.css">
 </head>
 
@@ -48,7 +209,7 @@
             });
         });
     </script>
-        <script type="text/javascript" src="/loading.js"></script>
+        
 </body>
 
 </html>

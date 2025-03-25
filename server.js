@@ -511,11 +511,22 @@ app.get("/signup", (req, res) => {
   res.sendFile(path.join(__dirname, "signUp.html"));
 });
 
-// Serve farmer homepage after login/signup.
-app.get("/home", (req, res) => {
-  res.sendFile(path.join(__dirname, "homepage.html"));
+app.get("/signup", (req, res) => {
+  res.sendFile(path.join(__dirname, "signUp.html"));
 });
-
+// Serve farmer homepage after login/signup.
+app.get("/customer", (req, res) => {
+  res.sendFile(path.join(__dirname, "customer.jpg"));
+});
+app.get("/farmer-bg", (req, res) => {
+  res.sendFile(path.join(__dirname, "farmer-removebg-preview.png"));
+});
+app.get("/ind_farmer", (req, res) => {
+  res.sendFile(path.join(__dirname, "indian_farmer.jpg"));
+});
+app.get("/ind_farmer1", (req, res) => {
+  res.sendFile(path.join(__dirname, "indian-farmer.avif"));
+});
 // Serve customer homepage after login/signup.
 app.get("/homecus", (req, res) => {
   res.sendFile(path.join(__dirname, "homepage_cus.html"));
@@ -567,17 +578,12 @@ app.get("/predict", (req, res) => {
 app.get("/upload", (req, res) => {
   res.sendFile(path.join(__dirname, "symptom.html"));
 });
-// Simple health check route
-app.get("/healthcheck", (req, res) => {
-  res.send("OK");
-});
+
 
 // Default route: serve the index page.
 app.get("/", (req, res) => {
 res.sendFile(path.join(__dirname,"index.html"));
 });
-
-app.get("/healthcheck", (req, res) => res.send("OK"));
 app.get("/favicon.ico", (req, res) => res.status(204).end());
 
 
