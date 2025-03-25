@@ -573,7 +573,9 @@ app.get("/logincus", (req, res) => {
 app.get("/predict", (req, res) => {
   res.sendFile(path.join(__dirname, "prediction.html"));
 });
-
+app.get("/home", (req, res) => {
+  res.sendFile(path.join(__dirname, "homepage.html"));
+});
 // Serve symptom upload page.
 app.get("/upload", (req, res) => {
   res.sendFile(path.join(__dirname, "symptom.html"));
