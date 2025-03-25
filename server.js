@@ -571,7 +571,7 @@ app.get("/healthcheck", (req, res) => {
 
 // Default route: serve the index page.
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname,"index.html"));
+  res.sendFile("/index.html");
 });
 
 app.get("/healthcheck", (req, res) => res.send("OK"));
