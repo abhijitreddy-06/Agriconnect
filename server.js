@@ -351,7 +351,7 @@ app.post("/api/products", upload.single("productImage"), async (req, res) => {
         quantityUnit,
       ];
       await db.query(insertQuery, values);
-      res.redirect("/farmer-market.html");
+      res.redirect("/market");
     }
   } catch (error) {
     console.error("Error inserting product:", error);
