@@ -571,7 +571,7 @@ app.get("/healthcheck", (req, res) => {
 
 // Default route: serve the index page.
 app.get("/", (req, res) => {
-  res.sendFile("/index.html");
+  res.sendFile("/AgriConnect/index.html");
 });
 
 app.get("/healthcheck", (req, res) => res.send("OK"));
