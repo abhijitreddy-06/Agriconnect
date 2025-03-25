@@ -44,7 +44,7 @@ const __dirname = path.dirname(__filename);
  *                    SERVE STATIC FILES
  ************************************************************************/
 // Serve files from the "public" directory so that assets like HTML, CSS, and JS are accessible.
-app.use(express.static(path.join(__dirname, "public")));
+
 
 // Serve files from the "uploads" directory (if uploads are stored outside of "public").
 app.use("/uploads", express.static("uploads"));
@@ -145,7 +145,7 @@ app.post("/signup", async (req, res) => {
     await db.query(insertQuery, [username, phone, hashedPassword]);
 
     // Send the homepage for farmers after successful signup.
-    res.sendFile(path.join(__dirname, "public", "pages", "homepage.html"));
+    res.sendFile(path.join(__dirname, "homepage.html"));
   } catch (err) {
     console.error("Signup Error:", err);
     res.send(
@@ -232,7 +232,7 @@ app.post("/signupcus", async (req, res) => {
     await db.query(insertQuery, [username, phone, hashedPassword]);
 
     // Send the customer homepage after signup.
-    res.sendFile(path.join(__dirname, "public", "pages", "homepage_cus.html"));
+    res.sendFile(path.join(__dirname, "homepage_cus.html"));
   } catch (err) {
     console.error("Signup Error:", err);
     res.send(
@@ -281,7 +281,7 @@ app.post("/logincus", async (req, res) => {
 /************************************************************************
  *                FILE UPLOADS & PRODUCT LISTINGS
  ************************************************************************/
-const uploadDir = path.join(__dirname, "public", "uploads");
+const uploadDir = path.join(__dirname, "uploads");
 // Create the uploads directory if it doesn't exist.
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
@@ -351,7 +351,7 @@ app.post("/api/products", upload.single("productImage"), async (req, res) => {
         quantityUnit,
       ];
       await db.query(insertQuery, values);
-      res.redirect("/pages/farmer-market.html");
+      res.redirect("/farmer-market.html");
     }
   } catch (error) {
     console.error("Error inserting product:", error);
@@ -500,69 +500,69 @@ app.get("/prediction/:id", async (req, res) => {
  ************************************************************************/
 // Serve login page.
 app.get("/login", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "pages", "login.html"));
+  res.sendFile(path.join(__dirname,"login.html"));
 });
 
 // Serve farmer signup page.
 app.get("/signup", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "pages", "signUp.html"));
+  res.sendFile(path.join(__dirname, "signUp.html"));
 });
 
 // Serve farmer homepage after login/signup.
 app.get("/home", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "pages", "homepage.html"));
+  res.sendFile(path.join(__dirname, "homepage.html"));
 });
 
 // Serve customer homepage after login/signup.
 app.get("/homecus", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "pages", "homepage_cus.html"));
+  res.sendFile(path.join(__dirname, "homepage_cus.html"));
 });
 
 // Serve health-related page.
 app.get("/health", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "pages", "health.html"));
+  res.sendFile(path.join(__dirname, "health.html"));
 });
 
 // Serve selling page for product listings.
 app.get("/sell", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "pages", "selling.html"));
+  res.sendFile(path.join(__dirname, "selling.html"));
 });
 
 // Serve farmer market page.
 app.get("/market", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "pages", "farmer-market.html"));
+  res.sendFile(path.join(__dirname, "farmer-market.html"));
 });
 
 // Serve customer market page.
 app.get("/marketcus", (req, res) => {
   res.sendFile(
-    path.join(__dirname, "public", "pages", "farmer-market_cus.html")
+    path.join(__dirname,  "farmer-market_cus.html")
   );
 });
 
 // Serve page listing different types of users.
 app.get("/whichusers", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "pages", "whichusers.html"));
+  res.sendFile(path.join(__dirname,  "whichusers.html"));
 });
 
 // Serve customer signup page.
 app.get("/signupcus", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "pages", "signupcus.html"));
+  res.sendFile(path.join(__dirname,  "signupcus.html"));
 });
 
 // Serve customer login page.
 app.get("/logincus", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "pages", "logincus.html"));
+  res.sendFile(path.join(__dirname, "logincus.html"));
 });
 
 // Serve prediction page.
 app.get("/predict", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "pages", "prediction.html"));
+  res.sendFile(path.join(__dirname, "prediction.html"));
 });
 
 // Serve symptom upload page.
 app.get("/upload", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "pages", "symptom.html"));
+  res.sendFile(path.join(__dirname, "symptom.html"));
 });
 // Simple health check route
 app.get("/healthcheck", (req, res) => {
@@ -571,7 +571,7 @@ app.get("/healthcheck", (req, res) => {
 
 // Default route: serve the index page.
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "pages", "index.html"));
+  res.sendFile(path.join(__dirname,"index.html"));
 });
 
 app.get("/healthcheck", (req, res) => res.send("OK"));

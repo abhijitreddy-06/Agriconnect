@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const analysisResult = await analysisResponse.json();
         if (analysisResult.success) {
           // Redirect to the prediction page with the returned predictionId
-          window.location.href = `/pages/prediction.html?id=${result.predictionId}`;
+          window.location.href = `/prediction.html?id=${result.predictionId}`;
         }
       }
     } catch (error) {
