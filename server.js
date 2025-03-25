@@ -502,7 +502,10 @@ app.get("/prediction/:id", async (req, res) => {
 app.get("/login", (req, res) => {
   res.sendFile(path.join(__dirname,"login.html"));
 });
-
+app.get("/main-bg", (req, res) => {
+  // This will send the image file "logo.png" located in the "images" folder.
+  res.sendFile(path.join(__dirname, "hero_grass.jpg"));
+});
 // Serve farmer signup page.
 app.get("/signup", (req, res) => {
   res.sendFile(path.join(__dirname, "signUp.html"));
