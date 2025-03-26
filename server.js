@@ -45,7 +45,6 @@ const __dirname = path.dirname(__filename);
  ************************************************************************/
 // Serve files from the "public" directory so that assets like HTML, CSS, and JS are accessible.
 
-
 // Serve files from the "uploads" directory (if uploads are stored outside of "public").
 app.use("/uploads", express.static("uploads"));
 
@@ -427,15 +426,10 @@ Based on your description "${description}", here is some general advice:
 Analyze the following image and description:
 Image URL: ${image_path}
 Description: ${description}
-
-In ${language.trim()}, provide a JSON object with the following keys:
-- "diseaseName": The name of the disease.
-- "cause": The cause of the disease.
-- "detailedExplanation": A detailed explanation of the disease.
-- "bestRemedy": The best homemade remedy.
-
-Do not include any additional text or commentary outside of the JSON object.
-      `;
+Please provide a detailed answer in Markdown format, using headings, bold text, and bullet points where appropriate.
+In ${language.trim()}, provide a JSON object with keys "diseaseName", "cause", "detailedExplanation", "bestRemedy".
+Also include a key "markdownExplanation" that contains a short explanation in Markdown format.
+`;
     }
 
     // Define the Gemini AI model and construct the API URL using your API key.
@@ -506,9 +500,6 @@ Do not include any additional text or commentary outside of the JSON object.
   }
 });
 
-
-
-
 // Route to fetch a prediction record by ID.
 app.get("/prediction/:id", async (req, res) => {
   try {
@@ -531,7 +522,7 @@ app.get("/prediction/:id", async (req, res) => {
  ************************************************************************/
 // Serve login page.
 app.get("/login", (req, res) => {
-  res.sendFile(path.join(__dirname,"login.html"));
+  res.sendFile(path.join(__dirname, "login.html"));
 });
 app.get("/main-bg", (req, res) => {
   // This will send the image file "logo.png" located in the "images" folder.
@@ -580,19 +571,17 @@ app.get("/market", (req, res) => {
 
 // Serve customer market page.
 app.get("/marketcus", (req, res) => {
-  res.sendFile(
-    path.join(__dirname,  "farmer-market_cus.html")
-  );
+  res.sendFile(path.join(__dirname, "farmer-market_cus.html"));
 });
 
 // Serve page listing different types of users.
 app.get("/whichusers", (req, res) => {
-  res.sendFile(path.join(__dirname,  "whichusers.html"));
+  res.sendFile(path.join(__dirname, "whichusers.html"));
 });
 
 // Serve customer signup page.
 app.get("/signupcus", (req, res) => {
-  res.sendFile(path.join(__dirname,  "signupcus.html"));
+  res.sendFile(path.join(__dirname, "signupcus.html"));
 });
 
 // Serve customer login page.
@@ -612,13 +601,11 @@ app.get("/upload", (req, res) => {
   res.sendFile(path.join(__dirname, "symptom.html"));
 });
 
-
 // Default route: serve the index page.
 app.get("/", (req, res) => {
-res.sendFile(path.join(__dirname,"index.html"));
+  res.sendFile(path.join(__dirname, "index.html"));
 });
 app.get("/favicon.ico", (req, res) => res.status(204).end());
-
 
 /************************************************************************
  *                        START THE SERVER
