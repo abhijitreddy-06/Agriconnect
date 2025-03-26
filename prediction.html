@@ -2,171 +2,15 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Prediction Details</title>
-    <style>/* Modern Reset */
-*,
-*::before,
-*::after {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+  <!-- Basic Meta Tags -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Leaf Disease Analyzer - Prediction Details</title>
 
-
-
-/* Container for Form and Preview */
-.container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  padding: 2rem;
-  gap: 2rem;
-}
-
-/* Form Styling */
-form {
-  flex: 1 1 300px;
-  background: #fff;
-  padding: 2rem;
-  border-radius: 10px;
-  border: 1px solid #e0e0e0;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-  transition: transform 0.3s ease;
-}
-
-form:hover {
-  transform: translateY(-5px);
-}
-
-form label {
-  display: block;
-  margin-top: 1rem;
-  font-weight: bold;
-  color: #555;
-}
-
-/* Bigger input boxes and file input with dotted border */
-form input[type="file"],
-form textarea {
-  width: 100%;
-  padding: 1rem;
-  margin-top: 0.5rem;
-  border: 2px dotted #ccc;
-  border-radius: 6px;
-  transition: border-color 0.3s;
-  min-height: 50px;
-}
-
-form input[type="file"]:focus,
-form textarea:focus {
-  border-color: #2575fc;
-  outline: none;
-}
-
-/* Preferred Language Input Styling: Make it bigger */
-form input[type="text"]#language {
-  display: block;
-  width: 100%;
-  padding: 1rem;
-  margin-top: 0.5rem;
-  border: 2px dotted #ccc;
-  border-radius: 6px;
-  transition: border-color 0.3s;
-  min-height: 50px;
-}
-
-form input[type="text"]#language:focus {
-  border-color: #2575fc;
-  outline: none;
-}
-
-/* Speak Button Specific Styling: Forces it to appear on its own line */
-#micButton {
-  display: block;
-  width: 100%;
-  margin-top: 2rem;
-  padding: 0.75rem 1.5rem;
-  background: #2575fc;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background 0.3s ease, transform 0.2s;
-}
-
-#micButton:hover {
-  background: #1e63d1;
-  transform: translateY(-2px);
-}
-
-/* Preview Styling */
-.preview {
-  flex: 1 1 300px;
-  background: #fff;
-  padding: 2rem;
-  border-radius: 10px;
-  text-align: center;
-  border: 1px solid #e0e0e0;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-}
-
-.preview img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 8px;
-  transition: transform 0.3s ease;
-}
-
-.preview img:hover {
-  transform: scale(1.05);
-}
-
-/* Prediction Card Styling (if needed) */
-.prediction-card {
-  max-width: 600px;
-  margin: 2rem auto;
-  padding: 2rem;
-  background: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 10px;
-  text-align: center;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-}
-
-/* Generic Button Styling (if needed) */
-button {
-  margin-top: 1.5rem;
-  padding: 0.75rem 1.5rem;
-  background: #2575fc;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background 0.3s ease, transform 0.2s;
-}
-
-button:hover {
-  background: #1e63d1;
-  transform: translateY(-2px);
-}
-
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-  .container {
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  form,
-  .preview {
-    width: 90%;
-  }
-}
- *,
+  <!-- Main CSS & Reset -->
+  <style>
+    /* Modern Reset */
+    *,
     *::before,
     *::after {
       margin: 0;
@@ -174,18 +18,166 @@ button:hover {
       box-sizing: border-box;
     }
 
-    /* Container for Form and Preview */
-    .container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      padding: 2rem;
-      gap: 2rem;
+    /* Body & Font */
+    body {
+      font-family: "Arial", sans-serif;
+      margin: 0;
+      padding: 0;
+      position: relative;
     }
 
-    /* Prediction Card Styling */
+    /* Header (Navbar) Styling */
+    header {
+      background: #1a2d40;
+      color: white;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      width: 100%;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      width: 100%;
+      max-width: none;
+      gap: 10px;
+    }
+
+    .logo {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #c4a484;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+      justify-content: center;
+      margin-left: auto;
+    }
+
+    .nav-links li {
+      margin: 0 15px;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: white;
+      font-size: 1rem;
+      padding: 10px;
+      border-radius: 5px;
+      transition: all 0.3s;
+    }
+
+    .nav-links a:hover {
+      background-color: #fefefe;
+      color: black;
+    }
+
+    /* Dropdown Button */
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropbtn {
+      background: white;
+      color: black;
+      border: none;
+      padding: 10px 15px;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 5px;
+      box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+      white-space: nowrap;
+      margin-left: 1rem;
+    }
+
+    .dropbtn:hover {
+      background: #c4a484;
+    }
+
+    /* Dropdown Content */
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #1a2d40;
+      color: white;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+      z-index: 1;
+    }
+
+    .dropdown-content a {
+      color: white;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+    }
+
+    .dropdown-content a:hover {
+      background-color: white;
+      color: black;
+    }
+
+    /* Hamburger for Mobile */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+
+    .bar {
+      background-color: white;
+      height: 3px;
+      width: 25px;
+      margin: 3px 0;
+    }
+
+    @media (max-width: 768px) {
+      .navbar {
+        flex-wrap: wrap;
+        gap: 5px;
+      }
+
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        background-color: #1a2d40;
+        position: absolute;
+        top: 60px;
+        width: 100%;
+        left: 0;
+        z-index: 1;
+        text-align: center;
+        padding: 10px 0;
+      }
+
+      .nav-links.active {
+        display: flex;
+      }
+
+      .nav-links li {
+        margin: 10px 0;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+    }
+
+    /* Prediction Card Container */
     .prediction-card {
-      max-width: 600px;
+      max-width: 800px;
       margin: 2rem auto;
       padding: 2rem;
       background: #fff;
@@ -195,7 +187,7 @@ button:hover {
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
     }
 
-    /* Box Styling for Each Section */
+    /* Boxes for each section */
     .prediction-box {
       border: 1px solid #e0e0e0;
       padding: 1rem;
@@ -210,7 +202,7 @@ button:hover {
       color: #2575fc;
     }
 
-    /* Generic Button Styling */
+    /* "Another Prediction" Button */
     button {
       margin-top: 1.5rem;
       padding: 0.75rem 1.5rem;
@@ -228,54 +220,118 @@ button:hover {
       transform: translateY(-2px);
     }
 
-    /* Responsive Adjustments */
-    @media (max-width: 768px) {
-      .container {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .prediction-card {
-        width: 90%;
-      }
+    /* Footer */
+    .footer {
+      background: #1a2d40;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      position: relative;
     }
-</style>
-                <link rel="stylesheet" href="/loading.css">
+  </style>
 </head>
 
 <body>
-<div id="loadingOverlay">
-    <div class="spinner"></div>
-</div>
-    <nav>
-        <h1>Prediction Details</h1>
-    </nav>
-    <main>
-        <div class="prediction-card">
-            <h2 id="predictionTitle"></h2>
-            <p id="predictionDetails"></p>
-            <button id="newPrediction">Another Prediction</button>
+  <!-- Header / Navbar -->
+  <header>
+    <nav class="navbar">
+      <div class="logo">AgriConnect</div>
+      <ul class="nav-links">
+        <li><a href="/home">🏠Home</a></li>
+        <li><a href="/upload">🌿Check Plant Health </a></li>
+        <li><a href="/market">🛒Farmers’ Market</a></li>
+        <li><a href="/sell">🛍️Sell Product</a></li>
+        <li><a href="/">Log-out</a></li>
+      </ul>
+      <!-- Language Dropdown -->
+      <div class="dropdown">
+        <button class="dropbtn" onclick="toggleDropdown(this)">Language</button>
+        <div class="dropdown-content">
+          <a href="#">English</a>
+          <a href="#">Kannada</a>
         </div>
-    </main>
-    <footer>
-        <p>&copy; 2025 Leaf Disease Analyzer</p>
-    </footer>
+      </div>
+      <!-- Profile Dropdown -->
+      <div class="dropdown">
+        <button class="dropbtn" onclick="toggleDropdown(this)">Profile</button>
+        <div class="dropdown-content">
+          <a href="#">My Details</a>
+          <a href="#">My Cart</a>
+          <a href="#">My Health</a>
+          <a href="#">My Products</a>
+        </div>
+      </div>
+      <!-- Hamburger for Mobile -->
+      <div class="hamburger" id="hamburger">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content: Prediction Details -->
+  <main>
+    <div class="prediction-card">
+      <!-- Title from gemini_title or fallback -->
+      <h2 id="predictionTitle">Prediction</h2>
+
+      <!-- Separate boxes for each JSON field -->
+      <div class="prediction-box" id="diseaseNameBox">
+        <h3>Disease Name</h3>
+        <p id="diseaseNameContent"></p>
+      </div>
+
+      <div class="prediction-box" id="causeBox">
+        <h3>Cause</h3>
+        <p id="causeContent"></p>
+      </div>
+
+      <div class="prediction-box" id="detailedExplanationBox">
+        <h3>Detailed Explanation</h3>
+        <p id="detailedExplanationContent"></p>
+      </div>
+
+      <div class="prediction-box" id="bestRemedyBox">
+        <h3>Best Homemade Remedy</h3>
+        <p id="bestRemedyContent"></p>
+      </div>
+
+      <!-- Fallback container if JSON parsing fails -->
+      <p id="predictionDetails" style="margin-top: 1rem;"></p>
+
+      <!-- Button to go back or do another prediction -->
+      <button id="newPrediction">Another Prediction</button>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>&copy; 2025 AgriConnect. All rights reserved.</p>
+  </footer>
+
+  <!-- JavaScript for fetching and displaying the prediction -->
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
+      // Grab the ID from the URL query params
       const params = new URLSearchParams(window.location.search);
       const id = params.get('id');
+
       if (id) {
         try {
           const res = await fetch('/prediction/' + id);
           const result = await res.json();
+
           if (result.success) {
-            // Set title if available.
+            // Set the title if we have a gemini_title
             document.getElementById('predictionTitle').innerText =
               result.data.gemini_title || 'Prediction';
 
-            // Attempt to parse the gemini_details as JSON.
+            // Attempt to parse gemini_details as JSON
             try {
               const details = JSON.parse(result.data.gemini_details);
+
+              // Populate each box if JSON is valid
               document.getElementById('diseaseNameContent').innerText =
                 details.diseaseName || 'N/A';
               document.getElementById('causeContent').innerText =
@@ -286,7 +342,7 @@ button:hover {
                 details.bestRemedy || 'N/A';
             } catch (err) {
               console.error("Error parsing JSON:", err);
-              // Fallback: if JSON parsing fails, display full details in one container.
+              // Fallback: if JSON parsing fails, display everything in one container
               document.getElementById('predictionDetails').innerHTML =
                 result.data.gemini_details || '<p>No details available.</p>';
             }
@@ -295,14 +351,39 @@ button:hover {
           console.error(error);
         }
       }
-      // Redirect to home for another prediction.
+
+      // "Another Prediction" button
       document.getElementById('newPrediction').addEventListener('click', () => {
-        window.location.href = '/predict';
+        // Send them back to your main check-plant-health page or wherever:
+        window.location.href = '/upload';
       });
     });
-  </script>
 
-        
+    // Mobile hamburger toggle
+    const hamburger = document.getElementById("hamburger");
+    const navLinks = document.querySelector(".nav-links");
+    hamburger.addEventListener("click", () => {
+      navLinks.classList.toggle("active");
+    });
+
+    // Dropdown toggle
+    function toggleDropdown(button) {
+      const dropdownContent = button.parentElement.querySelector(".dropdown-content");
+      dropdownContent.style.display =
+        dropdownContent.style.display === "block" ? "none" : "block";
+    }
+    // Close the dropdown if the user clicks outside
+    window.onclick = function (event) {
+      if (!event.target.matches(".dropbtn")) {
+        const dropdowns = document.querySelectorAll(".dropdown-content");
+        dropdowns.forEach((dropdown) => {
+          if (dropdown.style.display === "block") {
+            dropdown.style.display = "none";
+          }
+        });
+      }
+    };
+  </script>
 </body>
 
 </html>

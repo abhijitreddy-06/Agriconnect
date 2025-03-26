@@ -391,39 +391,44 @@ app.post("/upload", upload.single("imageInput"), async (req, res) => {
 
 // Route to analyze the uploaded image using Gemini AI.
 // Route to analyze the uploaded image using Gemini AI.
+// Route to analyze the uploaded image using Gemini AI.
 app.post("/analyze", async (req, res) => {
   try {
     const { predictionId } = req.body;
     const dbResult = await db.query("SELECT * FROM predictions WHERE id = $1", [
       predictionId,
     ]);
+
     if (dbResult.rows.length === 0) {
       return res
         .status(404)
         .json({ success: false, error: "Prediction not found" });
     }
+
+    // Grab the record, which should include image_path, description, and language
     const record = dbResult.rows[0];
+    const { image_path, description, language } = record;
 
-    // Use a fixed image URL (change as needed)
-    const imageUrl =
-      "https://1.bp.blogspot.com/-fr7iwyvZ5t8/Xp082pHa5pI/AAAAAAAABBw/DSrN-yg9Lz4K3OjMzYD5gc_GHurIHvcRgCLcBGAsYHQ/s1600/Leaf%2Bspot%2Bdisease.jpg";
-
+    // Decide how to build the prompt based on whether the image path is publicly accessible
     let prompt;
-    if (imageUrl.includes("localhost")) {
+    if (!image_path || !image_path.startsWith("http")) {
+      // Fallback if the image_path is local or invalid
       prompt = `
-I cannot access local files like the image provided (${imageUrl}).
+I cannot access local files like the image provided (${image_path}).
 
-Based on your description "${record.description}", here is some general advice:
-[...further instructions...]
+Based on your description "${description}", here is some general advice:
+- Potential causes
+- Recommended treatments
+- Homemade remedy suggestions
       `;
     } else {
-      // Construct the prompt with the image URL and description from the prediction record.
+      // If the image is at a public URL, Gemini can (in principle) analyze it
       prompt = `
 Analyze the following image and description:
-Image URL: ${imageUrl}
-Description: ${record.description}
+Image URL: ${image_path}
+Description: ${description}
 
-In ${record.language.trim()}, provide a JSON object with the following keys:
+In ${language.trim()}, provide a JSON object with the following keys:
 - "diseaseName": The name of the disease.
 - "cause": The cause of the disease.
 - "detailedExplanation": A detailed explanation of the disease.
@@ -436,6 +441,8 @@ Do not include any additional text or commentary outside of the JSON object.
     // Define the Gemini AI model and construct the API URL using your API key.
     const GEMINI_MODEL = "models/gemini-1.5-pro-002";
     const geminiApiUrl = `https://generativelanguage.googleapis.com/v1/${GEMINI_MODEL}:generateContent?key=${process.env.GEMINI_API_KEY}`;
+
+    // Agent to keep the connection alive
     const httpsAgent = new https.Agent({ keepAlive: true });
 
     // Make a POST request to the Gemini AI API with the constructed prompt.
@@ -454,14 +461,17 @@ Do not include any additional text or commentary outside of the JSON object.
     const geminiResponse = response.data;
     console.log("Gemini AI Full Response:", geminiResponse);
 
+    // Check if we have a valid candidate
     if (!geminiResponse.candidates || geminiResponse.candidates.length === 0) {
       throw new Error("No response from Gemini AI.");
     }
+
+    // Extract the text from the first candidate
     const responseText =
       geminiResponse.candidates[0]?.content?.parts[0]?.text ||
       "No valid response.";
 
-    // Optionally, try to parse the responseText as JSON to ensure correct formatting.
+    // Optionally parse as JSON to confirm correct structure
     let jsonResponse;
     try {
       jsonResponse = JSON.parse(responseText);
@@ -470,14 +480,20 @@ Do not include any additional text or commentary outside of the JSON object.
       jsonResponse = null;
     }
 
-    // Update the prediction record with the details returned by Gemini AI.
+    // Update the prediction record with the raw text from Gemini
     await db.query("UPDATE predictions SET gemini_details = $1 WHERE id = $2", [
       responseText,
       predictionId,
     ]);
 
-    // Send back the AI-generated details in the response.
-    res.json({ success: true, data: { details: responseText, parsed: jsonResponse } });
+    // Send back the AI-generated details
+    res.json({
+      success: true,
+      data: {
+        details: responseText,
+        parsed: jsonResponse,
+      },
+    });
   } catch (error) {
     console.error("Error in /analyze:", error.message);
     if (error.response) {
@@ -489,6 +505,7 @@ Do not include any additional text or commentary outside of the JSON object.
     res.status(500).json({ success: false, error: error.message });
   }
 });
+
 
 
 
