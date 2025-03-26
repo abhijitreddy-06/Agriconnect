@@ -311,7 +311,7 @@ app.post("/api/products", upload.single("productImage"), async (req, res) => {
     quantityUnit,
   } = req.body;
   const imagePath = req.file ? "/uploads/" + req.file.filename : "";
-
+  
   try {
     // Convert price and quantity to float numbers.
     const parsedPrice = parseFloat(productPrice);
