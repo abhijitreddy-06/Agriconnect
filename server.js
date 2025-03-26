@@ -390,6 +390,7 @@ app.post("/upload", upload.single("imageInput"), async (req, res) => {
 });
 
 // Route to analyze the uploaded image using Gemini AI.
+// Route to analyze the uploaded image using Gemini AI.
 app.post("/analyze", async (req, res) => {
   try {
     const { predictionId } = req.body;
@@ -408,11 +409,10 @@ app.post("/analyze", async (req, res) => {
       "https://1.bp.blogspot.com/-fr7iwyvZ5t8/Xp082pHa5pI/AAAAAAAABBw/DSrN-yg9Lz4K3OjMzYD5gc_GHurIHvcRgCLcBGAsYHQ/s1600/Leaf%2Bspot%2Bdisease.jpg";
 
     let prompt;
-    // If the image URL is local (not applicable in production), use a fallback prompt.
     if (imageUrl.includes("localhost")) {
       prompt = `
 I cannot access local files like the image provided (${imageUrl}).
-[...explanatory fallback prompt...]
+
 Based on your description "${record.description}", here is some general advice:
 [...further instructions...]
       `;
@@ -422,11 +422,14 @@ Based on your description "${record.description}", here is some general advice:
 Analyze the following image and description:
 Image URL: ${imageUrl}
 Description: ${record.description}
-Provide:
-- The best homemade remedy
-- Why this issue occurs
-- A detailed explanation in ${record.language.trim()}
-Format your answer clearly and concisely.
+
+In ${record.language.trim()}, provide a JSON object with the following keys:
+- "diseaseName": The name of the disease.
+- "cause": The cause of the disease.
+- "detailedExplanation": A detailed explanation of the disease.
+- "bestRemedy": The best homemade remedy.
+
+Do not include any additional text or commentary outside of the JSON object.
       `;
     }
 
@@ -458,6 +461,15 @@ Format your answer clearly and concisely.
       geminiResponse.candidates[0]?.content?.parts[0]?.text ||
       "No valid response.";
 
+    // Optionally, try to parse the responseText as JSON to ensure correct formatting.
+    let jsonResponse;
+    try {
+      jsonResponse = JSON.parse(responseText);
+    } catch (err) {
+      console.error("Error parsing Gemini response as JSON:", err);
+      jsonResponse = null;
+    }
+
     // Update the prediction record with the details returned by Gemini AI.
     await db.query("UPDATE predictions SET gemini_details = $1 WHERE id = $2", [
       responseText,
@@ -465,7 +477,7 @@ Format your answer clearly and concisely.
     ]);
 
     // Send back the AI-generated details in the response.
-    res.json({ success: true, data: { details: responseText } });
+    res.json({ success: true, data: { details: responseText, parsed: jsonResponse } });
   } catch (error) {
     console.error("Error in /analyze:", error.message);
     if (error.response) {
@@ -477,6 +489,8 @@ Format your answer clearly and concisely.
     res.status(500).json({ success: false, error: error.message });
   }
 });
+
+
 
 // Route to fetch a prediction record by ID.
 app.get("/prediction/:id", async (req, res) => {

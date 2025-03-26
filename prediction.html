@@ -166,6 +166,79 @@ button:hover {
     width: 90%;
   }
 }
+ *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Container for Form and Preview */
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 2rem;
+      gap: 2rem;
+    }
+
+    /* Prediction Card Styling */
+    .prediction-card {
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Box Styling for Each Section */
+    .prediction-box {
+      border: 1px solid #e0e0e0;
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 6px;
+      background: #f9f9f9;
+      text-align: left;
+    }
+
+    .prediction-box h3 {
+      margin-bottom: 0.5rem;
+      color: #2575fc;
+    }
+
+    /* Generic Button Styling */
+    button {
+      margin-top: 1.5rem;
+      padding: 0.75rem 1.5rem;
+      background: #2575fc;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.3s ease, transform 0.2s;
+    }
+
+    button:hover {
+      background: #1e63d1;
+      transform: translateY(-2px);
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .prediction-card {
+        width: 90%;
+      }
+    }
 </style>
                 <link rel="stylesheet" href="/loading.css">
 </head>
@@ -187,28 +260,48 @@ button:hover {
     <footer>
         <p>&copy; 2025 Leaf Disease Analyzer</p>
     </footer>
-    <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            const params = new URLSearchParams(window.location.search);
-            const id = params.get('id');
-            if (id) {
-                try {
-                    const res = await fetch('/prediction/' + id);
-                    const result = await res.json();
-                    if (result.success) {
-                        document.getElementById('predictionTitle').innerText = result.data.gemini_title || 'Prediction';
-                        document.getElementById('predictionDetails').innerText = result.data.gemini_details || 'No details available.';
-                    }
-                } catch (error) {
-                    console.error(error);
-                }
+   script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get('id');
+      if (id) {
+        try {
+          const res = await fetch('/prediction/' + id);
+          const result = await res.json();
+          if (result.success) {
+            // Set title if available.
+            document.getElementById('predictionTitle').innerText =
+              result.data.gemini_title || 'Prediction';
+
+            // Attempt to parse the gemini_details as JSON.
+            try {
+              const details = JSON.parse(result.data.gemini_details);
+              document.getElementById('diseaseNameContent').innerText =
+                details.diseaseName || 'N/A';
+              document.getElementById('causeContent').innerText =
+                details.cause || 'N/A';
+              document.getElementById('detailedExplanationContent').innerText =
+                details.detailedExplanation || 'N/A';
+              document.getElementById('bestRemedyContent').innerText =
+                details.bestRemedy || 'N/A';
+            } catch (err) {
+              console.error("Error parsing JSON:", err);
+              // Fallback: if JSON parsing fails, display full details in one container.
+              document.getElementById('predictionDetails').innerHTML =
+                result.data.gemini_details || '<p>No details available.</p>';
             }
-            // Redirect to home for another prediction
-            document.getElementById('newPrediction').addEventListener('click', () => {
-                window.location.href = '/predict';
-            });
-        });
-    </script>
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+      // Redirect to home for another prediction.
+      document.getElementById('newPrediction').addEventListener('click', () => {
+        window.location.href = '/predict';
+      });
+    });
+  </script>
+
         
 </body>
 
