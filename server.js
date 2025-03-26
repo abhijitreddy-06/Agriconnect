@@ -394,9 +394,10 @@ app.post("/upload", upload.single("imageInput"), async (req, res) => {
 app.post("/analyze", async (req, res) => {
   try {
     const { predictionId } = req.body;
-    const dbResult = await db.query("SELECT * FROM predictions WHERE id = $1", [
-      predictionId,
-    ]);
+    const dbResult = await pool.query(
+      "SELECT * FROM predictions WHERE id = $1",
+      [predictionId]
+    );
 
     if (dbResult.rows.length === 0) {
       return res
@@ -404,112 +405,43 @@ app.post("/analyze", async (req, res) => {
         .json({ success: false, error: "Prediction not found" });
     }
 
-    // Grab the record, which should include image_path, description, and language
-    const record = dbResult.rows[0];
-    const { image_path, description, language } = record;
-
-    // Build a "super good" prompt, instructing Gemini to produce Markdown in the user's language
-    let prompt;
-    if (!image_path || !image_path.startsWith("http")) {
-      // Fallback if the image_path is local or invalid
-      prompt = `
-The image at (${image_path}) is not publicly accessible.
-
-In ${language.trim()}, please provide a **well-structured explanation** in **Markdown** format. 
-Include these sections with headings (## or ###):
-1. **Disease Name** 
-2. **Cause** 
-3. **Detailed Explanation** 
-4. **Best Homemade Remedy** 
-
-Start with a short introduction and end with a short conclusion. Make it user-friendly, easy to read, and concise. 
-Base your explanation on the following description:
-"${description}"
-      `;
-    } else {
-      // If the image is at a public URL, include it in the prompt
-      prompt = `
+    const { image_path, description, language } = dbResult.rows[0];
+    let prompt = `
 Analyze the following image and description:
 Image URL: ${image_path}
 Description: ${description}
 
-In ${language.trim()}, please provide a **well-structured explanation** in **Markdown** format, covering:
-1. **Disease Name** 
-2. **Cause** 
-3. **Detailed Explanation** 
-4. **Best Homemade Remedy** 
+In ${language.trim()}, provide a structured JSON object with the keys:
+{
+  "diseaseName": "Name of the disease",
+  "cause": "Cause of the disease",
+  "explanation": "Detailed explanation",
+  "remedy": "Best remedy for the disease"
+}
+Only return the JSON object without any additional text.
+`;
 
-Also include a short introduction and conclusion. Make it user-friendly, easy to read, and concise.
-      `;
-    }
-
-    // Gemini API details
-    const GEMINI_MODEL = "models/gemini-1.5-pro-002";
-    const geminiApiUrl = `https://generativelanguage.googleapis.com/v1/${GEMINI_MODEL}:generateContent?key=${process.env.GEMINI_API_KEY}`;
-
-    const httpsAgent = new https.Agent({ keepAlive: true });
-
-    // Send the prompt to Gemini
     const response = await axios.post(
-      geminiApiUrl,
-      {
-        contents: [{ parts: [{ text: prompt }] }],
-      },
-      {
-        headers: { "Content-Type": "application/json" },
-        timeout: 30000,
-        httpsAgent,
-      }
+      `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-pro-002:generateContent?key=${process.env.GEMINI_API_KEY}`,
+      { contents: [{ parts: [{ text: prompt }] }] },
+      { headers: { "Content-Type": "application/json" }, timeout: 30000 }
     );
 
-    const geminiResponse = response.data;
-    console.log("Gemini AI Full Response:", geminiResponse);
-
-    // Check if we have a valid candidate
-    if (!geminiResponse.candidates || geminiResponse.candidates.length === 0) {
-      throw new Error("No response from Gemini AI.");
-    }
-
-    // Extract the text from the first candidate
     const responseText =
-      geminiResponse.candidates[0]?.content?.parts[0]?.text ||
-      "No valid response.";
+      response.data.candidates?.[0]?.content?.parts[0]?.text || "{}";
+    const jsonResponse = JSON.parse(responseText);
 
-    // Optionally parse as JSON if you still want to see if it's valid JSON
-    let jsonResponse;
-    try {
-      jsonResponse = JSON.parse(responseText);
-    } catch (err) {
-      console.error("Error parsing Gemini response as JSON:", err);
-      jsonResponse = null;
-    }
+    await pool.query(
+      "UPDATE predictions SET gemini_details = $1 WHERE id = $2",
+      [responseText, predictionId]
+    );
 
-    // Store the raw text from Gemini in the DB
-    await db.query("UPDATE predictions SET gemini_details = $1 WHERE id = $2", [
-      responseText,
-      predictionId,
-    ]);
-
-    // Send back the AI-generated details
-    res.json({
-      success: true,
-      data: {
-        details: responseText,
-        parsed: jsonResponse,
-      },
-    });
+    res.json({ success: true, data: jsonResponse });
   } catch (error) {
-    console.error("Error in /analyze:", error.message);
-    if (error.response) {
-      console.error("Response Data:", error.response.data);
-      console.error("Response Status:", error.response.status);
-    } else if (error.request) {
-      console.error("No response received. Request:", error.request);
-    }
-    res.status(500).json({ success: false, error: error.message });
+    console.error("Error:", error.message);
+    res.status(500).json({ success: false, error: "Internal Server Error" });
   }
 });
-
 
 // Route to fetch a prediction record by ID.
 app.get("/prediction/:id", async (req, res) => {

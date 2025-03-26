@@ -2,10 +2,12 @@
 <html lang="en">
 
 <head>
+  <!-- Basic Meta Tags -->
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Leaf Disease Analyzer - Prediction Details</title>
 
-  <!-- Your existing style -->
+  <!-- Main CSS & Reset -->
   <style>
     /* Modern Reset */
     *,
@@ -265,50 +267,13 @@
       }
     }
   </style>
-<style>
-  /* Add your #loadingOverlay styles here if not included globally */
-  #loadingOverlay {
-    display: none;
-    position: fixed;
-    z-index: 9999;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(255, 255, 255, 0.7);
-    text-align: center;
-  }
-
-  .spinner {
-    margin: 20% auto;
-    border: 12px solid #f3f3f3;
-    border-top: 12px solid #2575fc;
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    animation: spin 1s linear infinite;
-  }
-
-  @keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-</style>
-  <!-- Marked.js for parsing Markdown, DOMPurify for sanitizing HTML -->
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/dompurify@2.3.6/dist/purify.min.js"></script>
 </head>
 
 <body>
-<!-- Loading overlay -->
-<div id="loadingOverlay">
-  <div class="spinner"></div>
-</div>
+  <!-- Loading Overlay with Spinner -->
+  <div id="loadingOverlay">
+    <div class="spinner"></div>
+  </div>
 
   <!-- Header / Navbar -->
   <header>
@@ -354,10 +319,29 @@
       <!-- Title from gemini_title or fallback -->
       <h2 id="predictionTitle">Prediction</h2>
 
-      <!-- Container for Gemini AI's Markdown response -->
-      <div class="prediction-box" id="aiMarkdownContainer" style="text-align: left;">
-        <!-- We'll inject the sanitized HTML here -->
+      <!-- Separate boxes for each JSON field -->
+      <div class="prediction-box" id="diseaseNameBox">
+        <h3>Disease Name</h3>
+        <p id="diseaseNameContent"></p>
       </div>
+
+      <div class="prediction-box" id="causeBox">
+        <h3>Cause</h3>
+        <p id="causeContent"></p>
+      </div>
+
+      <div class="prediction-box" id="detailedExplanationBox">
+        <h3>Detailed Explanation</h3>
+        <p id="detailedExplanationContent"></p>
+      </div>
+
+      <div class="prediction-box" id="bestRemedyBox">
+        <h3>Best Homemade Remedy</h3>
+        <p id="bestRemedyContent"></p>
+      </div>
+
+      <!-- Fallback container if JSON parsing fails -->
+      <p id="predictionDetails" style="margin-top: 1rem; display: none;"></p>
 
       <!-- Button to go back or do another prediction -->
       <button id="newPrediction">Another Prediction</button>
@@ -370,53 +354,70 @@
   </footer>
 
   <!-- JavaScript for fetching and displaying the prediction -->
- <script>
-  const uploadForm = document.getElementById("uploadForm");
-  const loadingOverlay = document.getElementById("loadingOverlay");
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Show the loading overlay as soon as the page loads
+      const loadingOverlay = document.getElementById('loadingOverlay');
+      loadingOverlay.style.display = 'block';
 
-  uploadForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
+      // Grab the ID from the URL query params
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get('id');
 
-    // Show the loading overlay
-    loadingOverlay.style.display = "block";
+      if (id) {
+        try {
+          const res = await fetch('/prediction/' + id);
+          const result = await res.json();
 
-    try {
-      const formData = new FormData(uploadForm);
+          if (result.success) {
+            // Set the title if we have a gemini_title
+            document.getElementById('predictionTitle').innerText =
+              result.data.gemini_title || 'Prediction';
 
-      // 1. Upload the data
-      const uploadResponse = await fetch("/upload", {
-        method: "POST",
-        body: formData,
-      });
-      const uploadResult = await uploadResponse.json();
+            // Attempt to parse gemini_details as JSON
+            try {
+              const details = JSON.parse(result.data.gemini_details);
 
-      if (uploadResult.success) {
-        // 2. Analyze
-        const analyzeResponse = await fetch("/analyze", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ predictionId: uploadResult.predictionId }),
-        });
-        const analyzeResult = await analyzeResponse.json();
+              // Populate each box if JSON is valid
+              document.getElementById('diseaseNameContent').innerText =
+                details.diseaseName || 'N/A';
+              document.getElementById('causeContent').innerText =
+                details.cause || 'N/A';
+              document.getElementById('detailedExplanationContent').innerText =
+                details.detailedExplanation || 'N/A';
+              document.getElementById('bestRemedyContent').innerText =
+                details.bestRemedy || 'N/A';
+            } catch (err) {
+              console.error("Error parsing JSON:", err);
 
-        if (analyzeResult.success) {
-          // 3. Redirect to the prediction details page
-          window.location.href = `/predict?id=${uploadResult.predictionId}`;
-        } else {
-          alert("Analyze failed: " + analyzeResult.error);
-          loadingOverlay.style.display = "none";
+              // Hide the 4 boxes if we can't parse JSON
+              document.getElementById('diseaseNameBox').style.display = 'none';
+              document.getElementById('causeBox').style.display = 'none';
+              document.getElementById('detailedExplanationBox').style.display = 'none';
+              document.getElementById('bestRemedyBox').style.display = 'none';
+
+              // Show fallback container with full text
+              const fallback = document.getElementById('predictionDetails');
+              fallback.style.display = 'block';
+              fallback.innerHTML =
+                result.data.gemini_details || '<p>No details available.</p>';
+            }
+          }
+        } catch (error) {
+          console.error(error);
         }
-      } else {
-        alert("Upload failed: " + uploadResult.error);
-        loadingOverlay.style.display = "none";
       }
-    } catch (error) {
-      console.error("Error:", error);
-      alert("An error occurred. Please try again.");
-      loadingOverlay.style.display = "none";
-    }
-  });
-</script><script>
+
+      // Hide the loading overlay once we've loaded or errored out
+      loadingOverlay.style.display = 'none';
+
+      // "Another Prediction" button
+      document.getElementById('newPrediction').addEventListener('click', () => {
+        // Send them back to your main check-plant-health page or wherever:
+        window.location.href = '/upload';
+      });
+    });
+
     // Mobile hamburger toggle
     const hamburger = document.getElementById("hamburger");
     const navLinks = document.querySelector(".nav-links");
@@ -430,7 +431,6 @@
       dropdownContent.style.display =
         dropdownContent.style.display === "block" ? "none" : "block";
     }
-
     // Close the dropdown if the user clicks outside
     window.onclick = function (event) {
       if (!event.target.matches(".dropbtn")) {
@@ -443,6 +443,10 @@
       }
     };
   </script>
+  <!-- Place these in your <head> or just before your </body> -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@2.3.6/dist/purify.min.js"></script>
+
 </body>
 
 </html>
