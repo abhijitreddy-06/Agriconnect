@@ -265,17 +265,50 @@
       }
     }
   </style>
+<style>
+  /* Add your #loadingOverlay styles here if not included globally */
+  #loadingOverlay {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.7);
+    text-align: center;
+  }
 
+  .spinner {
+    margin: 20% auto;
+    border: 12px solid #f3f3f3;
+    border-top: 12px solid #2575fc;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+</style>
   <!-- Marked.js for parsing Markdown, DOMPurify for sanitizing HTML -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/dompurify@2.3.6/dist/purify.min.js"></script>
 </head>
 
 <body>
-  <!-- Loading Overlay -->
-  <div id="loadingOverlay">
-    <div class="spinner"></div>
-  </div>
+<!-- Loading overlay -->
+<div id="loadingOverlay">
+  <div class="spinner"></div>
+</div>
 
   <!-- Header / Navbar -->
   <header>
@@ -337,54 +370,53 @@
   </footer>
 
   <!-- JavaScript for fetching and displaying the prediction -->
-  <script>
-    document.addEventListener('DOMContentLoaded', async () => {
-      // Show the loading overlay immediately
-      const loadingOverlay = document.getElementById('loadingOverlay');
-      loadingOverlay.style.display = 'block';
+ <script>
+  const uploadForm = document.getElementById("uploadForm");
+  const loadingOverlay = document.getElementById("loadingOverlay");
 
-      // Grab the ID from the URL query params
-      const params = new URLSearchParams(window.location.search);
-      const id = params.get('id');
+  uploadForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-      if (id) {
-        try {
-          const res = await fetch('/prediction/' + id);
-          const result = await res.json();
+    // Show the loading overlay
+    loadingOverlay.style.display = "block";
 
-          if (result.success) {
-            // If you have a separate gemini_title, show it; otherwise default to "Prediction"
-            document.getElementById('predictionTitle').innerText =
-              result.data.gemini_title || 'Prediction';
+    try {
+      const formData = new FormData(uploadForm);
 
-            // Raw text from Gemini
-            const rawMarkdown = result.data.gemini_details || '';
-
-            // Convert Markdown to HTML
-            const convertedHtml = marked.parse(rawMarkdown);
-
-            // Sanitize the HTML
-            const safeHtml = DOMPurify.sanitize(convertedHtml);
-
-            // Insert into the container
-            const aiContainer = document.getElementById('aiMarkdownContainer');
-            aiContainer.innerHTML = safeHtml;
-          }
-        } catch (error) {
-          console.error('Error fetching prediction:', error);
-        }
-      }
-
-      // Hide the loading overlay
-      loadingOverlay.style.display = 'none';
-
-      // Another Prediction button
-      document.getElementById('newPrediction').addEventListener('click', () => {
-        // Send them back to your main check-plant-health page or wherever:
-        window.location.href = '/upload';
+      // 1. Upload the data
+      const uploadResponse = await fetch("/upload", {
+        method: "POST",
+        body: formData,
       });
-    });
+      const uploadResult = await uploadResponse.json();
 
+      if (uploadResult.success) {
+        // 2. Analyze
+        const analyzeResponse = await fetch("/analyze", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ predictionId: uploadResult.predictionId }),
+        });
+        const analyzeResult = await analyzeResponse.json();
+
+        if (analyzeResult.success) {
+          // 3. Redirect to the prediction details page
+          window.location.href = `/predict?id=${uploadResult.predictionId}`;
+        } else {
+          alert("Analyze failed: " + analyzeResult.error);
+          loadingOverlay.style.display = "none";
+        }
+      } else {
+        alert("Upload failed: " + uploadResult.error);
+        loadingOverlay.style.display = "none";
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("An error occurred. Please try again.");
+      loadingOverlay.style.display = "none";
+    }
+  });
+</script><script>
     // Mobile hamburger toggle
     const hamburger = document.getElementById("hamburger");
     const navLinks = document.querySelector(".nav-links");

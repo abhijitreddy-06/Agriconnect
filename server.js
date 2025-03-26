@@ -408,38 +408,48 @@ app.post("/analyze", async (req, res) => {
     const record = dbResult.rows[0];
     const { image_path, description, language } = record;
 
-    // Decide how to build the prompt based on whether the image path is publicly accessible
+    // Build a "super good" prompt, instructing Gemini to produce Markdown in the user's language
     let prompt;
     if (!image_path || !image_path.startsWith("http")) {
       // Fallback if the image_path is local or invalid
       prompt = `
-I cannot access local files like the image provided (${image_path}).
+The image at (${image_path}) is not publicly accessible.
 
-Based on your description "${description}", here is some general advice:
-- Potential causes
-- Recommended treatments
-- Homemade remedy suggestions
+In ${language.trim()}, please provide a **well-structured explanation** in **Markdown** format. 
+Include these sections with headings (## or ###):
+1. **Disease Name** 
+2. **Cause** 
+3. **Detailed Explanation** 
+4. **Best Homemade Remedy** 
+
+Start with a short introduction and end with a short conclusion. Make it user-friendly, easy to read, and concise. 
+Base your explanation on the following description:
+"${description}"
       `;
     } else {
-      // If the image is at a public URL, Gemini can (in principle) analyze it
+      // If the image is at a public URL, include it in the prompt
       prompt = `
 Analyze the following image and description:
 Image URL: ${image_path}
 Description: ${description}
-Please provide a detailed answer in Markdown format, using headings, bold text, and bullet points where appropriate.
-In ${language.trim()}, provide a JSON object with keys "diseaseName", "cause", "detailedExplanation", "bestRemedy".
-Also include a key "markdownExplanation" that contains a short explanation in Markdown format.
-`;
+
+In ${language.trim()}, please provide a **well-structured explanation** in **Markdown** format, covering:
+1. **Disease Name** 
+2. **Cause** 
+3. **Detailed Explanation** 
+4. **Best Homemade Remedy** 
+
+Also include a short introduction and conclusion. Make it user-friendly, easy to read, and concise.
+      `;
     }
 
-    // Define the Gemini AI model and construct the API URL using your API key.
+    // Gemini API details
     const GEMINI_MODEL = "models/gemini-1.5-pro-002";
     const geminiApiUrl = `https://generativelanguage.googleapis.com/v1/${GEMINI_MODEL}:generateContent?key=${process.env.GEMINI_API_KEY}`;
 
-    // Agent to keep the connection alive
     const httpsAgent = new https.Agent({ keepAlive: true });
 
-    // Make a POST request to the Gemini AI API with the constructed prompt.
+    // Send the prompt to Gemini
     const response = await axios.post(
       geminiApiUrl,
       {
@@ -465,7 +475,7 @@ Also include a key "markdownExplanation" that contains a short explanation in Ma
       geminiResponse.candidates[0]?.content?.parts[0]?.text ||
       "No valid response.";
 
-    // Optionally parse as JSON to confirm correct structure
+    // Optionally parse as JSON if you still want to see if it's valid JSON
     let jsonResponse;
     try {
       jsonResponse = JSON.parse(responseText);
@@ -474,7 +484,7 @@ Also include a key "markdownExplanation" that contains a short explanation in Ma
       jsonResponse = null;
     }
 
-    // Update the prediction record with the raw text from Gemini
+    // Store the raw text from Gemini in the DB
     await db.query("UPDATE predictions SET gemini_details = $1 WHERE id = $2", [
       responseText,
       predictionId,
@@ -499,6 +509,7 @@ Also include a key "markdownExplanation" that contains a short explanation in Ma
     res.status(500).json({ success: false, error: error.message });
   }
 });
+
 
 // Route to fetch a prediction record by ID.
 app.get("/prediction/:id", async (req, res) => {
