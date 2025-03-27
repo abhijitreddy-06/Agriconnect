@@ -16,7 +16,7 @@ import fs from "fs";
 import fetch from "node-fetch";
 import https from "https";
 import { Credentials, Translator } from "@translated/lara";
-
+import vision from "@google-cloud/vision";
 /************************************************************************
  *                  LOAD ENVIRONMENT VARIABLES (.env)
  ************************************************************************/
@@ -374,28 +374,63 @@ app.get("/api/products", async (req, res) => {
  ************************************************************************/
 // Route to upload images for symptom prediction.
 // Route to upload images for symptom prediction.
+// Create a Vision client
+const visionClient = new vision.ImageAnnotatorClient();
+
+// Gemini API Key from environment
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+if (!GEMINI_API_KEY) {
+  console.error("Missing GEMINI_API_KEY environment variable.");
+  process.exit(1);
+}
+
+// --------------------------------------------
+// Route: Upload (with Vision analysis)
+// --------------------------------------------
 app.post("/upload", upload.single("imageInput"), async (req, res) => {
   try {
     const { description, language } = req.body;
-    const filePath = req.file.path;
-    const query =
-      "INSERT INTO predictions (image_path, description, language) VALUES ($1, $2, $3) RETURNING id";
-    const values = [filePath, description, language];
-    const result = await db.query(query, values);
-    res.json({ success: true, predictionId: result.rows[0].id });
+    const filePath = req.file.path; // The local path where Multer saved the file
+
+    // 1. Analyze the image with Cloud Vision
+    const [visionResult] = await visionClient.labelDetection(filePath);
+    const labels = visionResult.labelAnnotations || [];
+    // Extract the label descriptions
+    const labelDescriptions = labels.map((label) => label.description);
+
+    // 2. Insert into DB
+    const insertQuery = `
+      INSERT INTO predictions (image_path, description, language, vision_labels)
+      VALUES ($1, $2, $3, $4)
+      RETURNING id
+    `;
+    const insertValues = [
+      filePath,
+      description,
+      language,
+      JSON.stringify(labelDescriptions),
+    ];
+    const dbResult = await db.query(insertQuery, insertValues);
+
+    // Return the newly created record's ID
+    res.json({ success: true, predictionId: dbResult.rows[0].id });
   } catch (error) {
-    console.error(error);
+    console.error("Error in /upload:", error.message);
     res.status(500).json({ success: false, error: error.message });
   }
 });
 
-// Route to analyze the uploaded image using Gemini AI.
+// --------------------------------------------
+// Route: Analyze (Using Gemini)
+// --------------------------------------------
 app.post("/analyze", async (req, res) => {
   try {
     const { predictionId } = req.body;
-    const dbResult = await db.query("SELECT * FROM predictions WHERE id = $1", [
-      predictionId,
-    ]);
+    // 1. Fetch the prediction record
+    const dbResult = await db.query(
+      "SELECT * FROM predictions WHERE id = $1",
+      [predictionId]
+    );
     if (dbResult.rows.length === 0) {
       return res
         .status(404)
@@ -403,39 +438,34 @@ app.post("/analyze", async (req, res) => {
     }
     const record = dbResult.rows[0];
 
-    // Construct the public URL for the uploaded image
-    const imageUrl = `${req.protocol}://${req.get("host")}/${
-      record.image_path
-    }`;
-
-    let prompt;
-    // If the image URL is local (for testing), use a fallback prompt.
-    if (imageUrl.includes("localhost")) {
-      prompt = `
-I cannot access local files like the image provided (${imageUrl}).
-[...explanatory fallback prompt...]
-Based on your description "${record.description}", here is some general advice:
-[...further instructions...]
-      `;
-    } else {
-      // Construct the prompt using the public image URL and the prediction record
-      prompt = `
-Analyze the following image and description:
-Image URL: ${imageUrl}
-Description: ${record.description}
-Provide:
-- The best homemade remedy in ${record.language.trim()}
-- Why this issue occurs in ${record.language.trim()}
-- A detailed explanation in ${record.language.trim()}
-Format your answer clearly and concisely.
-      `;
+    // 2. Parse the vision labels from the DB
+    let visionLabels = [];
+    try {
+      visionLabels = JSON.parse(record.vision_labels) || [];
+    } catch (err) {
+      console.error("Error parsing vision_labels:", err.message);
     }
 
+    // 3. Construct the text prompt for Gemini
+    const prompt = `
+The user uploaded an image. The Google Cloud Vision API detected these labels:
+${visionLabels.join(", ")}
+
+The user's own description: "${record.description}"
+
+Now, based on this information, please provide:
+1) The best homemade remedy in ${record.language.trim()}
+2) Why this issue occurs in ${record.language.trim()}
+3) A detailed explanation in ${record.language.trim()}
+
+Format your answer clearly and concisely.
+    `;
+
+    // 4. Call the Gemini (PaLM) API
     const GEMINI_MODEL = "models/gemini-1.5-pro-002";
-    const geminiApiUrl = `https://generativelanguage.googleapis.com/v1/${GEMINI_MODEL}:generateContent?key=${process.env.GEMINI_API_KEY}`;
+    const geminiApiUrl = `https://generativelanguage.googleapis.com/v1/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
     const httpsAgent = new https.Agent({ keepAlive: true });
 
-    // Call the Gemini AI API with the constructed prompt
     const response = await axios.post(
       geminiApiUrl,
       {
@@ -454,16 +484,19 @@ Format your answer clearly and concisely.
     if (!geminiResponse.candidates || geminiResponse.candidates.length === 0) {
       throw new Error("No response from Gemini AI.");
     }
+
+    // 5. Extract the text from Gemini's response
     const responseText =
       geminiResponse.candidates[0]?.content?.parts[0]?.text ||
-      "No valid response.";
+      "No valid response from Gemini.";
 
-    // Update the prediction record with the details returned by Gemini AI.
+    // 6. Update the prediction record with Gemini’s response
     await db.query("UPDATE predictions SET gemini_details = $1 WHERE id = $2", [
       responseText,
       predictionId,
     ]);
 
+    // 7. Return the text to the client
     res.json({ success: true, data: { details: responseText } });
   } catch (error) {
     console.error("Error in /analyze:", error.message);
@@ -477,8 +510,9 @@ Format your answer clearly and concisely.
   }
 });
 
-
-// Route to fetch a prediction record by ID.
+// --------------------------------------------
+// Route: Fetch Prediction by ID
+// --------------------------------------------
 app.get("/prediction/:id", async (req, res) => {
   try {
     const query = "SELECT * FROM predictions WHERE id = $1";
@@ -494,6 +528,8 @@ app.get("/prediction/:id", async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 });
+
+
 
 /************************************************************************
  *                         PAGE ROUTES

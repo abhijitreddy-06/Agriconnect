@@ -12,6 +12,7 @@
     "install:prod": "npm install --omit=dev"
   },
   "dependencies": {
+    "@google-cloud/vision": "^5.1.0",
     "@translated/lara": "^1.4.0",
     "axios": "^1.8.3",
     "bcrypt": "^5.1.1",
