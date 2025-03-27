@@ -267,13 +267,138 @@
       }
     }
   </style>
+  <style>
+    /* Enhanced Loading Overlay */
+    #loadingOverlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.95);
+      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      backdrop-filter: blur(5px);
+    }
+  
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid #1a2d40;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+  
+    .loading-text {
+      color: #1a2d40;
+      font-size: 1.2rem;
+      font-weight: 500;
+    }
+  
+    /* Enhanced Prediction Card */
+    .prediction-card {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+      transition: transform 0.3s ease;
+    }
+  
+    .prediction-card:hover {
+      transform: translateY(-5px);
+    }
+  
+    /* Formatted Content Styles */
+    .formatted-content {
+      padding: 2rem;
+      background: #f8f9fa;
+      border-radius: 12px;
+      margin: 2rem 0;
+    }
+  
+    .formatted-content h3 {
+      color: #1a2d40;
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+      border-bottom: 2px solid #c4a484;
+      padding-bottom: 0.5rem;
+    }
+  
+    .formatted-content p {
+      line-height: 1.8;
+      color: #444;
+      margin-bottom: 1.5rem;
+      font-size: 1.1rem;
+    }
+  
+    .formatted-content ul,
+    .formatted-content ol {
+      margin: 1rem 0;
+      padding-left: 2rem;
+    }
+  
+    .formatted-content li {
+      margin-bottom: 0.8rem;
+      line-height: 1.6;
+    }
+  
+    .formatted-content strong {
+      color: #1a2d40;
+    }
+  
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .prediction-card {
+        margin: 1rem;
+        padding: 1rem;
+      }
+  
+      .formatted-content {
+        padding: 1rem;
+      }
+  
+      .formatted-content h3 {
+        font-size: 1.3rem;
+      }
+    }
+  
+    /* Enhanced Button */
+    .action-button {
+      background: linear-gradient(135deg, #1a2d40, #2575fc);
+      color: white;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 2rem auto 0;
+    }
+  
+    .action-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+  </style>
 </head>
 
 <body>
-  <!-- Loading Overlay with Spinner -->
-  <div id="loadingOverlay">
-    <div class="spinner"></div>
-  </div>
+<!-- Loading Overlay -->
+<div id="loadingOverlay">
+  <div class="spinner"></div>
+  <div class="loading-text">Analyzing your plant health...</div>
+</div>
 
   <!-- Header / Navbar -->
   <header>
@@ -313,40 +438,22 @@
     </nav>
   </header>
 
-  <!-- Main Content: Prediction Details -->
-  <main>
-    <div class="prediction-card">
-      <!-- Title from gemini_title or fallback -->
-      <h2 id="predictionTitle">Prediction</h2>
+<main>
+  <div class="prediction-card">
+    <h2 id="predictionTitle">Plant Health Analysis</h2>
+    <div class="formatted-content" id="analysisResults"></div>
+    <button class="action-button" id="newPrediction">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+        class="feather feather-plus">
+        <line x1="12" y1="5" x2="12" y2="19"></line>
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+      </svg>
+      New Analysis
+    </button>
+  </div>
+</main>
 
-      <!-- Separate boxes for each JSON field -->
-      <div class="prediction-box" id="diseaseNameBox">
-        <h3>Disease Name</h3>
-        <p id="diseaseNameContent"></p>
-      </div>
-
-      <div class="prediction-box" id="causeBox">
-        <h3>Cause</h3>
-        <p id="causeContent"></p>
-      </div>
-
-      <div class="prediction-box" id="detailedExplanationBox">
-        <h3>Detailed Explanation</h3>
-        <p id="detailedExplanationContent"></p>
-      </div>
-
-      <div class="prediction-box" id="bestRemedyBox">
-        <h3>Best Homemade Remedy</h3>
-        <p id="bestRemedyContent"></p>
-      </div>
-
-      <!-- Fallback container if JSON parsing fails -->
-      <p id="predictionDetails" style="margin-top: 1rem; display: none;"></p>
-
-      <!-- Button to go back or do another prediction -->
-      <button id="newPrediction">Another Prediction</button>
-    </div>
-  </main>
 
   <!-- Footer -->
   <footer class="footer">
@@ -356,68 +463,54 @@
   <!-- JavaScript for fetching and displaying the prediction -->
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
-      // Show the loading overlay as soon as the page loads
-      const loadingOverlay = document.getElementById('loadingOverlay');
-      loadingOverlay.style.display = 'block';
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const analysisResults = document.getElementById('analysisResults');
 
-      // Grab the ID from the URL query params
-      const params = new URLSearchParams(window.location.search);
-      const id = params.get('id');
+        // Show loading overlay
+        loadingOverlay.style.display = 'flex';
 
-      if (id) {
-        try {
-          const res = await fetch('/prediction/' + id);
-          const result = await res.json();
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get('id');
 
-          if (result.success) {
-            // Set the title if we have a gemini_title
-            document.getElementById('predictionTitle').innerText =
-              result.data.gemini_title || 'Prediction';
+        if (id) {
+          try {
+            const res = await fetch(`/prediction/${id}`);
+            const result = await res.json();
 
-            // Attempt to parse gemini_details as JSON
-            try {
-              const details = JSON.parse(result.data.gemini_details);
+            if (result.success) {
+              // Process Gemini response
+              const rawContent = result.data.gemini_details || 'No analysis available';
 
-              // Populate each box if JSON is valid
-              document.getElementById('diseaseNameContent').innerText =
-                details.diseaseName || 'N/A';
-              document.getElementById('causeContent').innerText =
-                details.cause || 'N/A';
-              document.getElementById('detailedExplanationContent').innerText =
-                details.detailedExplanation || 'N/A';
-              document.getElementById('bestRemedyContent').innerText =
-                details.bestRemedy || 'N/A';
-            } catch (err) {
-              console.error("Error parsing JSON:", err);
+              // Convert markdown to HTML and sanitize
+              const formattedHtml = DOMPurify.sanitize(marked.parse(rawContent));
 
-              // Hide the 4 boxes if we can't parse JSON
-              document.getElementById('diseaseNameBox').style.display = 'none';
-              document.getElementById('causeBox').style.display = 'none';
-              document.getElementById('detailedExplanationBox').style.display = 'none';
-              document.getElementById('bestRemedyBox').style.display = 'none';
+              // Display formatted content
+              analysisResults.innerHTML = formattedHtml;
 
-              // Show fallback container with full text
-              const fallback = document.getElementById('predictionDetails');
-              fallback.style.display = 'block';
-              fallback.innerHTML =
-                result.data.gemini_details || '<p>No details available.</p>';
+              // Update title if available
+              if (result.data.gemini_title) {
+                document.getElementById('predictionTitle').textContent = result.data.gemini_title;
+              }
             }
+          } catch (error) {
+            analysisResults.innerHTML = `<p class="error-message">Error loading analysis: ${error.message}</p>`;
+          } finally {
+            loadingOverlay.style.display = 'none';
           }
-        } catch (error) {
-          console.error(error);
         }
-      }
 
-      // Hide the loading overlay once we've loaded or errored out
-      loadingOverlay.style.display = 'none';
-
-      // "Another Prediction" button
-      document.getElementById('newPrediction').addEventListener('click', () => {
-        // Send them back to your main check-plant-health page or wherever:
-        window.location.href = '/upload';
+        // Button click handler
+        document.getElementById('newPrediction').addEventListener('click', () => {
+          window.location.href = '/upload';
+        });
       });
-    });
 
+      // Add any additional interactive features
+      document.addEventListener('click', (e) => {
+        if (e.target.closest('.dropdown-toggle')) {
+          // Handle dropdown toggle
+        }
+      });
     // Mobile hamburger toggle
     const hamburger = document.getElementById("hamburger");
     const navLinks = document.querySelector(".nav-links");
