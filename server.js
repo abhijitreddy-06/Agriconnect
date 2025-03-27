@@ -403,12 +403,13 @@ app.post("/analyze", async (req, res) => {
     }
     const record = dbResult.rows[0];
 
-    // Use a fixed image URL (change as needed)
-    const imageUrl =
-      "https://1.bp.blogspot.com/-fr7iwyvZ5t8/Xp082pHa5pI/AAAAAAAABBw/DSrN-yg9Lz4K3OjMzYD5gc_GHurIHvcRgCLcBGAsYHQ/s1600/Leaf%2Bspot%2Bdisease.jpg";
+    // Construct the public URL for the uploaded image
+    const imageUrl = `${req.protocol}://${req.get("host")}/${
+      record.image_path
+    }`;
 
     let prompt;
-    // If the image URL is local (not applicable in production), use a fallback prompt.
+    // If the image URL is local (for testing), use a fallback prompt.
     if (imageUrl.includes("localhost")) {
       prompt = `
 I cannot access local files like the image provided (${imageUrl}).
@@ -417,7 +418,7 @@ Based on your description "${record.description}", here is some general advice:
 [...further instructions...]
       `;
     } else {
-      // Construct the prompt with the image URL and description from the prediction record.
+      // Construct the prompt using the public image URL and the prediction record
       prompt = `
 Analyze the following image and description:
 Image URL: ${imageUrl}
@@ -430,12 +431,11 @@ Format your answer clearly and concisely.
       `;
     }
 
-    // Define the Gemini AI model and construct the API URL using your API key.
     const GEMINI_MODEL = "models/gemini-1.5-pro-002";
     const geminiApiUrl = `https://generativelanguage.googleapis.com/v1/${GEMINI_MODEL}:generateContent?key=${process.env.GEMINI_API_KEY}`;
     const httpsAgent = new https.Agent({ keepAlive: true });
 
-    // Make a POST request to the Gemini AI API with the constructed prompt.
+    // Call the Gemini AI API with the constructed prompt
     const response = await axios.post(
       geminiApiUrl,
       {
@@ -464,7 +464,6 @@ Format your answer clearly and concisely.
       predictionId,
     ]);
 
-    // Send back the AI-generated details in the response.
     res.json({ success: true, data: { details: responseText } });
   } catch (error) {
     console.error("Error in /analyze:", error.message);
@@ -477,6 +476,7 @@ Format your answer clearly and concisely.
     res.status(500).json({ success: false, error: error.message });
   }
 });
+
 
 // Route to fetch a prediction record by ID.
 app.get("/prediction/:id", async (req, res) => {
