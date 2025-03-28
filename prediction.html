@@ -391,14 +391,151 @@
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     }
   </style>
+    <style>
+      /* ------------------
+           Enhanced Typography 
+           ------------------ */
+      body {
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        line-height: 1.6;
+        color: #2d3748;
+      }
+    
+      h2 {
+        font-size: 2.2rem;
+        color: #1a2d40;
+        margin-bottom: 2rem;
+        text-align: center;
+        font-weight: 600;
+        letter-spacing: -0.5px;
+      }
+    
+      /* ------------------
+           Analysis Sections 
+           ------------------ */
+      .analysis-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin: 2rem 0;
+      }
+    
+      .analysis-card {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        border-left: 4px solid #c4a484;
+        transition: transform 0.3s ease;
+      }
+    
+      .analysis-card:hover {
+        transform: translateY(-3px);
+      }
+    
+      .card-title {
+        font-size: 1.4rem;
+        color: #1a2d40;
+        margin-bottom: 1rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+      }
+    
+      .card-content {
+        font-size: 1.1rem;
+        color: #4a5568;
+        line-height: 1.8;
+      }
+    
+      .card-content ul {
+        padding-left: 1.5rem;
+        margin: 1rem 0;
+      }
+    
+      .card-content li {
+        margin-bottom: 0.8rem;
+        position: relative;
+        padding-left: 1.5rem;
+      }
+    
+      .card-content li::before {
+        content: '•';
+        color: #c4a484;
+        position: absolute;
+        left: 0;
+        font-weight: bold;
+      }
+    
+      /* ------------------
+           Specialized Cards 
+           ------------------ */
+      .remedy-card {
+        border-color: #48bb78;
+        grid-column: span 2;
+      }
+    
+      .cause-card {
+        border-color: #f56565;
+      }
+    
+      .explanation-card {
+        border-color: #4299e1;
+      }
+    
+      /* ------------------
+           Responsive Design 
+           ------------------ */
+      @media (max-width: 768px) {
+        .analysis-grid {
+          grid-template-columns: 1fr;
+        }
+    
+        h2 {
+          font-size: 1.8rem;
+        }
+    
+        .analysis-card {
+          padding: 1.5rem;
+        }
+    
+        .card-title {
+          font-size: 1.2rem;
+        }
+    
+        .card-content {
+          font-size: 1rem;
+        }
+      }
+    
+      /* ------------------
+           Loading Animation 
+           ------------------ */
+      .leaf-spinner {
+        width: 60px;
+        height: 60px;
+        animation: leafPulse 1.5s infinite;
+        color: #48bb78;
+      }
+    
+      @keyframes leafPulse {
+    
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+    
+        50% {
+          transform: scale(1.2);
+          opacity: 0.7;
+        }
+      }
+    </style>
 </head>
 
 <body>
-<!-- Loading Overlay -->
-<div id="loadingOverlay">
-  <div class="spinner"></div>
-  <div class="loading-text">Analyzing your plant health...</div>
-</div>
 
   <!-- Header / Navbar -->
   <header>
@@ -438,104 +575,104 @@
     </nav>
   </header>
 
+<!-- Loading Overlay -->
+<div id="loadingOverlay">
+  <svg class="leaf-spinner" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+    <path
+      d="M17 8C8 10 5.9 16.8 3 22c5-3 8-6.3 10-9 2.7 2.7 5 5 8 8-1-2-3-6-10-11zm-5-6c-2 2-3 5-3 8l3 3c1-1 1-2 2-2s1 1 2 2c3-3 3-7 1-10-1-1-4-1-5-1z" />
+  </svg>
+  <div class="loading-text">Analyzing Leaf Structure...</div>
+</div>
+
+<!-- Main Content -->
 <main>
   <div class="prediction-card">
-    <h2 id="predictionTitle">Plant Health Analysis</h2>
-    <div class="formatted-content" id="analysisResults"></div>
+    <h2 id="predictionTitle">🌿 Plant Health Analysis</h2>
+
+    <div class="analysis-grid" id="analysisResults">
+      <!-- Dynamic content will be inserted here -->
+    </div>
+
     <button class="action-button" id="newPrediction">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-        class="feather feather-plus">
-        <line x1="12" y1="5" x2="12" y2="19"></line>
-        <line x1="5" y1="12" x2="19" y2="12"></line>
+        stroke="currentColor" stroke-width="2">
+        <path d="M12 5v14M5 12h14" />
       </svg>
       New Analysis
     </button>
   </div>
 </main>
 
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const analysisResults = document.getElementById('analysisResults');
 
-  <!-- Footer -->
-  <footer class="footer">
-    <p>&copy; 2025 AgriConnect. All rights reserved.</p>
-  </footer>
+    // Show loading overlay
+    loadingOverlay.style.display = 'flex';
 
-  <!-- JavaScript for fetching and displaying the prediction -->
-  <script>
-    document.addEventListener('DOMContentLoaded', async () => {
-        const loadingOverlay = document.getElementById('loadingOverlay');
-        const analysisResults = document.getElementById('analysisResults');
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
 
-        // Show loading overlay
-        loadingOverlay.style.display = 'flex';
+    if (id) {
+      try {
+        const res = await fetch(`/prediction/${id}`);
+        const result = await res.json();
 
-        const params = new URLSearchParams(window.location.search);
-        const id = params.get('id');
+        if (result.success) {
+          const rawContent = result.data.gemini_details || 'No analysis available';
+          const htmlContent = DOMPurify.sanitize(marked.parse(rawContent));
 
-        if (id) {
-          try {
-            const res = await fetch(`/prediction/${id}`);
-            const result = await res.json();
+          // Convert HTML string to DOM elements
+          const tempDiv = document.createElement('div');
+          tempDiv.innerHTML = htmlContent;
 
-            if (result.success) {
-              // Process Gemini response
-              const rawContent = result.data.gemini_details || 'No analysis available';
+          // Create analysis cards
+          const sections = {
+            '🌱 Best Remedy': { class: 'remedy-card', content: '' },
+            '🔍 Primary Causes': { class: 'cause-card', content: '' },
+            '📚 Detailed Explanation': { class: 'explanation-card', content: '' }
+          };
 
-              // Convert markdown to HTML and sanitize
-              const formattedHtml = DOMPurify.sanitize(marked.parse(rawContent));
+          // Extract content based on headings
+          tempDiv.querySelectorAll('h3, h4').forEach(heading => {
+            const title = heading.textContent.trim();
+            let content = '';
+            let nextElem = heading.nextElementSibling;
 
-              // Display formatted content
-              analysisResults.innerHTML = formattedHtml;
-
-              // Update title if available
-              if (result.data.gemini_title) {
-                document.getElementById('predictionTitle').textContent = result.data.gemini_title;
-              }
+            while (nextElem && !['H3', 'H4'].includes(nextElem.tagName)) {
+              content += nextElem.outerHTML;
+              nextElem = nextElem.nextElementSibling;
             }
-          } catch (error) {
-            analysisResults.innerHTML = `<p class="error-message">Error loading analysis: ${error.message}</p>`;
-          } finally {
-            loadingOverlay.style.display = 'none';
-          }
+
+            Object.keys(sections).forEach(key => {
+              if (title.includes(key.replace(/[^a-zA-Z]/g, ''))) {
+                sections[key].content = content;
+              }
+            });
+          });
+
+          // Build card elements
+          analysisResults.innerHTML = Object.entries(sections)
+            .map(([title, config]) => `
+                <div class="analysis-card ${config.class}">
+                  <div class="card-title">
+                    ${title.split(' ')[0]} <!-- Emoji -->
+                    <span>${title.split(' ').slice(1).join(' ')}</span>
+                  </div>
+                  <div class="card-content">${config.content || 'No content available'}</div>
+                </div>
+              `).join('');
         }
-
-        // Button click handler
-        document.getElementById('newPrediction').addEventListener('click', () => {
-          window.location.href = '/upload';
-        });
-      });
-
-      // Add any additional interactive features
-      document.addEventListener('click', (e) => {
-        if (e.target.closest('.dropdown-toggle')) {
-          // Handle dropdown toggle
-        }
-      });
-    // Mobile hamburger toggle
-    const hamburger = document.getElementById("hamburger");
-    const navLinks = document.querySelector(".nav-links");
-    hamburger.addEventListener("click", () => {
-      navLinks.classList.toggle("active");
-    });
-
-    // Dropdown toggle
-    function toggleDropdown(button) {
-      const dropdownContent = button.parentElement.querySelector(".dropdown-content");
-      dropdownContent.style.display =
-        dropdownContent.style.display === "block" ? "none" : "block";
-    }
-    // Close the dropdown if the user clicks outside
-    window.onclick = function (event) {
-      if (!event.target.matches(".dropbtn")) {
-        const dropdowns = document.querySelectorAll(".dropdown-content");
-        dropdowns.forEach((dropdown) => {
-          if (dropdown.style.display === "block") {
-            dropdown.style.display = "none";
-          }
-        });
+      } catch (error) {
+        analysisResults.innerHTML = `<div class="analysis-card">Error loading analysis: ${error.message}</div>`;
+      } finally {
+        loadingOverlay.style.display = 'none';
       }
-    };
-  </script>
+    }
+  });
+</script>
+
   <!-- Place these in your <head> or just before your </body> -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/dompurify@2.3.6/dist/purify.min.js"></script>
