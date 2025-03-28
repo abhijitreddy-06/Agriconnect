@@ -531,27 +531,41 @@
             <div class="logo">AgriConnect</div>
             <!-- Navigation links -->
             <ul class="nav-links">
-                <li><a href="/">🏠Home</a></li>
-                <li><a href="/whichusers">🌾Farming Guide</a></li>
-                <li><a href="/whichusers">🌿Check Plant Health</a></li>
-                <li><a href="/whichusers">🛒Farmers’ Market</a></li>
+                <li><a href="/home">🏠Home</a></li>
+                <li><a href="/upload">🌿Check Plant Health </a></li>
+                <li><a href="/market">🛒Farmers’ Market</a></li>
+                <li><a href="/sell">🛍️Sell Product</a></li>
+                <li><a href="/">Log-out</a></li>
             </ul>
-            <!-- Language selection dropdown -->
-            <div class="dropdown">
-                <button class="dropbtn" onclick="toggleDropdown()">Language</button>
-                <div class="dropdown-content">
-                    <a href="">English</a>
-                    <a href="">Kannada</a>
-                </div>
-            </div>
-            <!-- Sign-up button -->
-            <button class="login-btn" onclick="window.location.href='/whichusers'">Sign-up</button>
-            <!-- Hamburger menu for mobile view -->
-            <div class="hamburger">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
-            </div>
+<!-- Dropdown for language selection -->
+<div class="dropdown">
+    <!-- Button that triggers the language dropdown -->
+    <button class="dropbtn" onclick="toggleDropdown(this)">Language</button>
+    <!-- Dropdown content with available languages -->
+    <div class="dropdown-content">
+        <a href="">English</a>
+        <a href="">Kannada</a>
+    </div>
+</div>
+
+<!-- Profile button -->
+<div class="dropdown dropdown1">
+    <button class="dropbtn " onclick="toggleDropdown(this)">Profile</button>
+    <div class="dropdown-content">
+        <a href="">My Details</a>
+        <a href="">My Cart</a>
+        <a href="">My Health</a>
+        <a href="">My Products</a>
+    </div>
+</div>
+
+<!-- Hamburger menu for mobile devices -->
+<div class="hamburger">
+    <span class="bar"></span>
+    <span class="bar"></span>
+    <span class="bar"></span>
+</div>
+
         </nav>
     </header>
 
@@ -644,7 +658,7 @@
     </footer>
 
     <!-- External JavaScript files -->
-    <script >//navbar
+    <script>//navbar
         const hamburger = document.querySelector(".hamburger");
         const navLinks = document.querySelector(".nav-links");
 
@@ -670,9 +684,8 @@
             }
         };
 
-    
-</script>
-   
+
+    </script>
     <script>
         // Toggle Button Logic for Price and Quantity
         document.querySelectorAll('.unit-toggle').forEach(group => {

@@ -492,14 +492,16 @@ body {
                 <li><a href="/whichusers">🌿Check Plant Health </a></li>
                 <li><a href="/whichusers">🛒Farmers’ Market</a></li>
             </ul>
-            <!-- Dropdown for language selection -->
-            <div class="dropdown">
-                <button class="dropbtn" onclick="toggleDropdown()">Language</button>
-                <div class="dropdown-content">
-                    <a href="">English</a>
-                    <a href="">Kannada</a>
-                </div>
-            </div>
+<!-- Dropdown for language selection -->
+<div class="dropdown">
+    <!-- Button that triggers the language dropdown -->
+    <button class="dropbtn" onclick="toggleDropdown(this)">Language</button>
+    <!-- Dropdown content with available languages -->
+    <div class="dropdown-content">
+        <a href="">English</a>
+        <a href="">Kannada</a>
+    </div>
+</div>
             <!-- Sign-up button -->
             <button class="login-btn" onclick="window.location.href='/whichusers'">Sign-up</button>
             <!-- Hamburger menu for mobile view -->
@@ -545,7 +547,7 @@ body {
     </footer>
 
     <!-- External JavaScript file -->
-    <script >//navbar
+    <script>//navbar
         const hamburger = document.querySelector(".hamburger");
         const navLinks = document.querySelector(".nav-links");
 
@@ -571,7 +573,8 @@ body {
             }
         };
 
-</script>
+
+    </script>
 <script>
     // Show loader immediately
     document.addEventListener('readystatechange', () => {

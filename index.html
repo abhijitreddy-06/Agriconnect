@@ -366,15 +366,16 @@ color:black;
                 <li><a href="/whichusers" data-translate>🌿Check Plant Health </a></li>
                 <li><a href="/whichusers" data-translate>🛒Farmers’ Market</a></li>
             </ul>
-
-            <!-- Dropdown for Language selection -->
-            <div class="dropdown">
-                <button class="dropbtn" onclick="toggleDropdown()">Language</button>
-                <div class="dropdown-content">
-                    <a href="">English</a>
-                    <a href="">Kannada</a>
-                </div>
-            </div>
+<!-- Dropdown for language selection -->
+<div class="dropdown">
+  <!-- Button that triggers the language dropdown -->
+  <button class="dropbtn" onclick="toggleDropdown(this)">Language</button>
+  <!-- Dropdown content with available languages -->
+  <div class="dropdown-content">
+    <a href="">English</a>
+    <a href="">Kannada</a>
+  </div>
+</div>
 
             <!-- Sign-up Button -->
             <button class="login-btn" onclick="window.location.href='/whichusers'">Sign-up</button>
@@ -405,34 +406,34 @@ color:black;
     </footer>
 
     <!-- JavaScript file for interactive behavior -->
-    <script >//navbar
-      const hamburger = document.querySelector(".hamburger");
-      const navLinks = document.querySelector(".nav-links");
+        <script>//navbar
+          const hamburger = document.querySelector(".hamburger");
+          const navLinks = document.querySelector(".nav-links");
 
-      hamburger.addEventListener("click", () => {
-        navLinks.classList.toggle("active");
-      });
-      function toggleDropdown(button) {
-        const dropdownContent = button.parentElement.querySelector(".dropdown-content");
-        dropdownContent.style.display =
-          dropdownContent.style.display === "block" ? "none" : "block";
-      }
-
-
-      // Close the dropdown if the user clicks outside
-      window.onclick = function (event) {
-        if (!event.target.matches(".dropbtn")) {
-          const dropdowns = document.querySelectorAll(".dropdown-content");
-          dropdowns.forEach((dropdown) => {
-            if (dropdown.style.display === "block") {
-              dropdown.style.display = "none";
-            }
+          hamburger.addEventListener("click", () => {
+            navLinks.classList.toggle("active");
           });
-        }
-      };
+          function toggleDropdown(button) {
+            const dropdownContent = button.parentElement.querySelector(".dropdown-content");
+            dropdownContent.style.display =
+              dropdownContent.style.display === "block" ? "none" : "block";
+          }
 
-    
-</script>
+
+          // Close the dropdown if the user clicks outside
+          window.onclick = function (event) {
+            if (!event.target.matches(".dropbtn")) {
+              const dropdowns = document.querySelectorAll(".dropdown-content");
+              dropdowns.forEach((dropdown) => {
+                if (dropdown.style.display === "block") {
+                  dropdown.style.display = "none";
+                }
+              });
+            }
+          };
+
+
+        </script>
 <script>
   // Show loader immediately
   document.addEventListener('readystatechange', () => {
