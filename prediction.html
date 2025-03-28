@@ -8,25 +8,172 @@
   <title>Leaf Disease Analyzer - Prediction Details</title>
 
   <!-- Main CSS & Reset -->
+<style>
+  /* Enhanced Loading Overlay */
+  #loadingOverlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.95);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    backdrop-filter: blur(5px);
+  }
+
+  .spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #1a2d40;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+  }
+
+  .loading-text {
+    color: #1a2d40;
+    font-size: 1.2rem;
+    font-weight: 500;
+  }
+
+  /* Enhanced Prediction Card */
+  .prediction-card {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    transition: transform 0.3s ease;
+  }
+
+  .prediction-card:hover {
+    transform: translateY(-5px);
+  }
+
+  /* Formatted Content Styles */
+  .formatted-content {
+    padding: 2rem;
+    background: #f8f9fa;
+    border-radius: 12px;
+    margin: 2rem 0;
+  }
+
+  .formatted-content h3 {
+    color: #1a2d40;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    border-bottom: 2px solid #c4a484;
+    padding-bottom: 0.5rem;
+  }
+
+  .formatted-content p {
+    line-height: 1.8;
+    color: #444;
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+  }
+
+  .formatted-content ul,
+  .formatted-content ol {
+    margin: 1rem 0;
+    padding-left: 2rem;
+  }
+
+  .formatted-content li {
+    margin-bottom: 0.8rem;
+    line-height: 1.6;
+  }
+
+  .formatted-content strong {
+    color: #1a2d40;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .prediction-card {
+      margin: 1rem;
+      padding: 1rem;
+    }
+
+    .formatted-content {
+      padding: 1rem;
+    }
+
+    .formatted-content h3 {
+      font-size: 1.3rem;
+    }
+  }
+
+  /* Enhanced Button */
+  .action-button {
+    background: linear-gradient(135deg, #1a2d40, #2575fc);
+    color: white;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 2rem auto 0;
+  }
+
+  .action-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  }
+</style>
   <style>
-    /* Modern Reset */
-    *,
-    *::before,
-    *::after {
+    * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-
-    /* Body & Font */
+  
     body {
       font-family: "Arial", sans-serif;
       margin: 0;
       padding: 0;
+      height: 100vh;
       position: relative;
     }
-
-    /* Header (Navbar) Styling */
+  
+    body {
+      font-family: 'Nunito';
+    }
+  
+    a {
+      color: black;
+      text-decoration: none;
+    }
+  
+    .body-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url("/main-bg") no-repeat center center/cover;
+      opacity: 0.85;
+      /* Adjust for 50% opacity */
+      z-index: -1;
+      /* Sends it behind the content */
+    }
+  
+    header {
+      position: relative;
+      z-index: 1;
+    }
+  
     header {
       background: #1a2d40;
       color: white;
@@ -36,7 +183,7 @@
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
       width: 100%;
     }
-
+  
     .navbar {
       display: flex;
       justify-content: space-between;
@@ -47,27 +194,29 @@
       position: relative;
       width: 100%;
       max-width: none;
+      padding-left: 1rem;
       gap: 10px;
     }
-
+  
     .logo {
       font-size: 2rem;
       font-weight: bold;
       color: #c4a484;
+      flex: 1;
       text-decoration: none;
     }
-
+  
     .nav-links {
       display: flex;
       list-style: none;
+      flex: 3;
       justify-content: center;
-      margin-left: auto;
     }
-
+  
     .nav-links li {
       margin: 0 15px;
     }
-
+  
     .nav-links a {
       text-decoration: none;
       color: white;
@@ -76,18 +225,14 @@
       border-radius: 5px;
       transition: all 0.3s;
     }
-
+  
     .nav-links a:hover {
       background-color: #fefefe;
       color: black;
     }
-
-    /* Dropdown Button */
-    .dropdown {
-      position: relative;
-      display: inline-block;
-    }
-
+  
+    /* dropdown button  */
+  
     .dropbtn {
       background: white;
       color: black;
@@ -98,14 +243,16 @@
       border-radius: 5px;
       box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
       white-space: nowrap;
-      margin-left: 1rem;
+  
     }
-
-    .dropbtn:hover {
-      background: #c4a484;
+  
+    /* Dropdown container */
+    .dropdown {
+      position: relative;
+      display: inline-block;
     }
-
-    /* Dropdown Content */
+  
+    /* Dropdown content (hidden by default) */
     .dropdown-content {
       display: none;
       position: absolute;
@@ -115,40 +262,67 @@
       box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
       z-index: 1;
     }
-
+  
+    /* Links inside the dropdown */
     .dropdown-content a {
       color: white;
       padding: 12px 16px;
       text-decoration: none;
       display: block;
     }
-
+  
     .dropdown-content a:hover {
       background-color: white;
       color: black;
     }
-
-    /* Hamburger for Mobile */
+  
+    .dropbtn:hover {
+      background: #c4a484;
+    }
+  
+    /*login button*/
+    .login-btn {
+      background: white;
+      color: black;
+      border: none;
+      padding: 10px 15px;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 5px;
+      box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+      white-space: nowrap;
+      margin-left: auto;
+    }
+  
+    .login-btn:hover {
+      background: #c4a484;
+    }
+  
     .hamburger {
       display: none;
       flex-direction: column;
       cursor: pointer;
       margin-left: 10px;
     }
-
+  
     .bar {
       background-color: white;
       height: 3px;
       width: 25px;
       margin: 3px 0;
     }
-
+  
     @media (max-width: 768px) {
       .navbar {
         flex-wrap: wrap;
+        justify-content: space-between;
         gap: 5px;
       }
-
+  
+      .logo {
+        font-size: medium;
+      }
+  
       .nav-links {
         display: none;
         flex-direction: column;
@@ -161,354 +335,104 @@
         text-align: center;
         padding: 10px 0;
       }
-
+  
       .nav-links.active {
         display: flex;
       }
-
+  
       .nav-links li {
         margin: 10px 0;
       }
-
+  
       .hamburger {
         display: flex;
       }
+  
+      .dropdown button {
+        width: 6rem;
+      }
+  
+      .dropdown1 button {
+        width: 5rem;
+      }
+  
+      .dropdown2 button {
+        width: 2rem;
+      }
+  
+      .login-btn button {
+        width: 5rem;
+      }
     }
-
-    /* Prediction Card Container */
-    .prediction-card {
-      max-width: 800px;
-      margin: 2rem auto;
-      padding: 2rem;
-      background: #fff;
-      border: 1px solid #e0e0e0;
-      border-radius: 10px;
-      text-align: center;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-    }
-
-    /* Boxes for each section */
-    .prediction-box {
-      border: 1px solid #e0e0e0;
-      padding: 1rem;
-      margin: 1rem 0;
-      border-radius: 6px;
-      background: #f9f9f9;
-      text-align: left;
-    }
-
-    .prediction-box h3 {
-      margin-bottom: 0.5rem;
-      color: #2575fc;
-    }
-
-    /* "Another Prediction" Button */
-    button {
-      margin-top: 1.5rem;
-      padding: 0.75rem 1.5rem;
-      background: #2575fc;
+  
+    /* main */
+    .main-container {
       color: #fff;
-      border: none;
-      border-radius: 6px;
+      font-size: 20px;
+      text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000,
+        -1px 1px 0 #000;
+      max-width: 1200px;
+      height: 80vh;
+      width: 90vw;
+      margin: auto;
+      margin-top: 2rem;
+      margin-bottom: 2rem;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(5px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-radius: 10px;
+      padding: 25px;
+      opacity: 0;
+      animation: fadeIn 2s forwards;
+      gap: 10px;
+    }
+  
+    .main-container button {
+      width: 15rem;
+      height: 3rem;
+      border-radius: 17px;
+      padding: 10px 20px;
+      font-size: 16px;
+      box-shadow: 2px 4px 8px rgba(0, 0, 0, 2);
+      transition: all 0.3s ease;
       cursor: pointer;
-      font-size: 1rem;
-      transition: background 0.3s ease, transform 0.2s;
     }
-
-    button:hover {
-      background: #1e63d1;
-      transform: translateY(-2px);
+  
+    .main-container button:hover {
+      background: #c4a484;
+      color: black;
     }
-
-    /* Footer */
+  
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+      }
+  
+      100% {
+        opacity: 1;
+      }
+    }
+  
+    /* 
+  footer */
+  
     .footer {
       background: #1a2d40;
       color: white;
       padding: 20px;
       text-align: center;
-      position: relative;
-    }
-
-    /* Loading Overlay Styles */
-    #loadingOverlay {
-      display: none;
-      /* Hidden by default */
-      position: fixed;
-      z-index: 9999;
-      /* Ensure it's on top of everything */
-      top: 0;
-      left: 0;
+      /* position: absolute; */
+      bottom: 0;
       width: 100%;
-      height: 100%;
-      background-color: rgba(255, 255, 255, 0.7);
-      /* semi-transparent white */
-      text-align: center;
     }
-
-    .spinner {
-      margin: 20% auto;
-      border: 12px solid #f3f3f3;
-      /* Light grey */
-      border-top: 12px solid #2575fc;
-      /* Blue */
-      border-radius: 50%;
-      width: 60px;
-      height: 60px;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg);
-      }
-
-      100% {
-        transform: rotate(360deg);
-      }
+  
+    .icons:hover {
+      color: black;
     }
   </style>
-  <style>
-    /* Enhanced Loading Overlay */
-    #loadingOverlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(255, 255, 255, 0.95);
-      z-index: 9999;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      backdrop-filter: blur(5px);
-    }
-  
-    .spinner {
-      width: 50px;
-      height: 50px;
-      border: 5px solid #f3f3f3;
-      border-top: 5px solid #1a2d40;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin-bottom: 20px;
-    }
-  
-    .loading-text {
-      color: #1a2d40;
-      font-size: 1.2rem;
-      font-weight: 500;
-    }
-  
-    /* Enhanced Prediction Card */
-    .prediction-card {
-      max-width: 800px;
-      margin: 2rem auto;
-      padding: 2rem;
-      background: #fff;
-      border-radius: 16px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-      transition: transform 0.3s ease;
-    }
-  
-    .prediction-card:hover {
-      transform: translateY(-5px);
-    }
-  
-    /* Formatted Content Styles */
-    .formatted-content {
-      padding: 2rem;
-      background: #f8f9fa;
-      border-radius: 12px;
-      margin: 2rem 0;
-    }
-  
-    .formatted-content h3 {
-      color: #1a2d40;
-      margin-bottom: 1rem;
-      font-size: 1.5rem;
-      border-bottom: 2px solid #c4a484;
-      padding-bottom: 0.5rem;
-    }
-  
-    .formatted-content p {
-      line-height: 1.8;
-      color: #444;
-      margin-bottom: 1.5rem;
-      font-size: 1.1rem;
-    }
-  
-    .formatted-content ul,
-    .formatted-content ol {
-      margin: 1rem 0;
-      padding-left: 2rem;
-    }
-  
-    .formatted-content li {
-      margin-bottom: 0.8rem;
-      line-height: 1.6;
-    }
-  
-    .formatted-content strong {
-      color: #1a2d40;
-    }
-  
-    /* Responsive Design */
-    @media (max-width: 768px) {
-      .prediction-card {
-        margin: 1rem;
-        padding: 1rem;
-      }
-  
-      .formatted-content {
-        padding: 1rem;
-      }
-  
-      .formatted-content h3 {
-        font-size: 1.3rem;
-      }
-    }
-  
-    /* Enhanced Button */
-    .action-button {
-      background: linear-gradient(135deg, #1a2d40, #2575fc);
-      color: white;
-      padding: 1rem 2rem;
-      border: none;
-      border-radius: 8px;
-      font-size: 1.1rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin: 2rem auto 0;
-    }
-  
-    .action-button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    }
-  </style>
-    <style>
-      /* ------------------
-           Enhanced Typography 
-           ------------------ */
-      body {
-        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-        line-height: 1.6;
-        color: #2d3748;
-      }
-    
-      h2 {
-        font-size: 2.2rem;
-        color: #1a2d40;
-        margin-bottom: 2rem;
-        text-align: center;
-        font-weight: 600;
-        letter-spacing: -0.5px;
-      }
-    
-      /* ------------------
-           Analysis Sections 
-           ------------------ */
-      .analysis-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 2rem;
-        margin: 2rem 0;
-      }
-    
-      .analysis-card {
-        background: white;
-        border-radius: 12px;
-        padding: 2rem;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        border-left: 4px solid #c4a484;
-        transition: transform 0.3s ease;
-      }
-    
-      .analysis-card:hover {
-        transform: translateY(-3px);
-      }
-    
-      .card-title {
-        font-size: 1.4rem;
-        color: #1a2d40;
-        margin-bottom: 1rem;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: 0.8rem;
-      }
-    
-      .card-content {
-        font-size: 1.1rem;
-        color: #4a5568;
-        line-height: 1.8;
-      }
-    
-      .card-content ul {
-        padding-left: 1.5rem;
-        margin: 1rem 0;
-      }
-    
-      .card-content li {
-        margin-bottom: 0.8rem;
-        position: relative;
-        padding-left: 1.5rem;
-      }
-    
-      .card-content li::before {
-        content: '•';
-        color: #c4a484;
-        position: absolute;
-        left: 0;
-        font-weight: bold;
-      }
-    
-      /* ------------------
-           Specialized Cards 
-           ------------------ */
-      .remedy-card {
-        border-color: #48bb78;
-        grid-column: span 2;
-      }
-    
-      .cause-card {
-        border-color: #f56565;
-      }
-    
-      .explanation-card {
-        border-color: #4299e1;
-      }
-    
-      /* ------------------
-           Responsive Design 
-           ------------------ */
-      @media (max-width: 768px) {
-        .analysis-grid {
-          grid-template-columns: 1fr;
-        }
-    
-        h2 {
-          font-size: 1.8rem;
-        }
-    
-        .analysis-card {
-          padding: 1.5rem;
-        }
-    
-        .card-title {
-          font-size: 1.2rem;
-        }
-    
-        .card-content {
-          font-size: 1rem;
-        }
-      }
-    
+    <!-- <style>
       /* ------------------
            Loading Animation 
            ------------------ */
@@ -532,7 +456,25 @@
           opacity: 0.7;
         }
       }
-    </style>
+
+@keyframes leafFloat {
+  0% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(5deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+.leaf-spinner {
+  animation: leafFloat 2s ease-in-out infinite;
+  width: 80px;
+  height: 80px;
+  margin-bottom: 1.5rem;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+    </style> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism.min.css">
 </head>
 
 <body>
@@ -576,102 +518,96 @@
   </header>
 
 <!-- Loading Overlay -->
-<div id="loadingOverlay">
+<!-- <div id="loadingOverlay">
   <svg class="leaf-spinner" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
     <path
       d="M17 8C8 10 5.9 16.8 3 22c5-3 8-6.3 10-9 2.7 2.7 5 5 8 8-1-2-3-6-10-11zm-5-6c-2 2-3 5-3 8l3 3c1-1 1-2 2-2s1 1 2 2c3-3 3-7 1-10-1-1-4-1-5-1z" />
   </svg>
   <div class="loading-text">Analyzing Leaf Structure...</div>
-</div>
+</div> -->
 
 <!-- Main Content -->
-<main>
-  <div class="prediction-card">
-    <h2 id="predictionTitle">🌿 Plant Health Analysis</h2>
-
-    <div class="analysis-grid" id="analysisResults">
-      <!-- Dynamic content will be inserted here -->
-    </div>
-
-    <button class="action-button" id="newPrediction">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-        stroke="currentColor" stroke-width="2">
-        <path d="M12 5v14M5 12h14" />
-      </svg>
-      New Analysis
-    </button>
+<body>
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay">
+    <div class="spinner"></div>
+    <div class="loading-text">Analyzing your plant health...</div>
   </div>
-</main>
 
-<script>
-  document.addEventListener('DOMContentLoaded', async () => {
-    const loadingOverlay = document.getElementById('loadingOverlay');
-    const analysisResults = document.getElementById('analysisResults');
+  <!-- Prediction Content -->
+  <main>
+    <div class="prediction-card">
+      <h2 id="predictionTitle">Plant Health Analysis</h2>
+      <div class="formatted-content" id="analysisResults"></div>
+      <button class="action-button" id="newPrediction">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          class="feather feather-plus">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        New Analysis
+      </button>
+    </div>
+  </main>
+    <!-- Footer section -->
+    <footer class="footer">
+      <p>&copy; 2025 AgriConnect. All rights reserved.</p>
+    </footer>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const loadingOverlay = document.getElementById('loadingOverlay');
+      const analysisResults = document.getElementById('analysisResults');
 
-    // Show loading overlay
-    loadingOverlay.style.display = 'flex';
+      // Show loading overlay
+      loadingOverlay.style.display = 'flex';
 
-    const params = new URLSearchParams(window.location.search);
-    const id = params.get('id');
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get('id');
 
-    if (id) {
-      try {
-        const res = await fetch(`/prediction/${id}`);
-        const result = await res.json();
+      if (id) {
+        try {
+          const res = await fetch(`/prediction/${id}`);
+          const result = await res.json();
 
-        if (result.success) {
-          const rawContent = result.data.gemini_details || 'No analysis available';
-          const htmlContent = DOMPurify.sanitize(marked.parse(rawContent));
+          if (result.success) {
+            // Process Gemini response
+            const rawContent = result.data.gemini_details || 'No analysis available';
 
-          // Convert HTML string to DOM elements
-          const tempDiv = document.createElement('div');
-          tempDiv.innerHTML = htmlContent;
+            // Convert markdown to HTML and sanitize
+            const formattedHtml = DOMPurify.sanitize(marked.parse(rawContent));
 
-          // Create analysis cards
-          const sections = {
-            '🌱 Best Remedy': { class: 'remedy-card', content: '' },
-            '🔍 Primary Causes': { class: 'cause-card', content: '' },
-            '📚 Detailed Explanation': { class: 'explanation-card', content: '' }
-          };
+            // Display formatted content
+            analysisResults.innerHTML = formattedHtml;
 
-          // Extract content based on headings
-          tempDiv.querySelectorAll('h3, h4').forEach(heading => {
-            const title = heading.textContent.trim();
-            let content = '';
-            let nextElem = heading.nextElementSibling;
-
-            while (nextElem && !['H3', 'H4'].includes(nextElem.tagName)) {
-              content += nextElem.outerHTML;
-              nextElem = nextElem.nextElementSibling;
+            // Update title if available
+            if (result.data.gemini_title) {
+              document.getElementById('predictionTitle').textContent = result.data.gemini_title;
             }
-
-            Object.keys(sections).forEach(key => {
-              if (title.includes(key.replace(/[^a-zA-Z]/g, ''))) {
-                sections[key].content = content;
-              }
-            });
-          });
-
-          // Build card elements
-          analysisResults.innerHTML = Object.entries(sections)
-            .map(([title, config]) => `
-                <div class="analysis-card ${config.class}">
-                  <div class="card-title">
-                    ${title.split(' ')[0]} <!-- Emoji -->
-                    <span>${title.split(' ').slice(1).join(' ')}</span>
-                  </div>
-                  <div class="card-content">${config.content || 'No content available'}</div>
-                </div>
-              `).join('');
+          }
+        } catch (error) {
+          analysisResults.innerHTML = `<p class="error-message">Error loading analysis: ${error.message}</p>`;
+        } finally {
+          loadingOverlay.style.display = 'none';
         }
-      } catch (error) {
-        analysisResults.innerHTML = `<div class="analysis-card">Error loading analysis: ${error.message}</div>`;
-      } finally {
-        loadingOverlay.style.display = 'none';
       }
-    }
-  });
-</script>
+
+      // Button click handler
+      document.getElementById('newPrediction').addEventListener('click', () => {
+        window.location.href = '/upload';
+      });
+    });
+
+    // Add any additional interactive features
+    document.addEventListener('click', (e) => {
+      if (e.target.closest('.dropdown-toggle')) {
+        // Handle dropdown toggle
+      }
+    });
+  </script>
+</body>
+
+
 
   <!-- Place these in your <head> or just before your </body> -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>

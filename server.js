@@ -419,14 +419,37 @@ Based on your description "${record.description}", here is some general advice:
     } else {
       // Construct the prompt with the image URL and description from the prediction record.
       prompt = `
-Analyze the following image and description:
-Image URL: ${imageUrl}
-Description: ${record.description}
-Provide:
-- The best homemade remedy in ${record.language.trim()}
-- Why this issue occurs in ${record.language.trim()}
-- A detailed explanation in ${record.language.trim()}
-Format your answer clearly and concisely.
+**Plant Disease Analysis Prompt**
+Use these ${record.description} and ${imageUrl}
+As an expert agricultural botanist, analyze this plant health issue described in ${record.language}: 
+"${record.description}"
+
+Provide a comprehensive response in ${record.language} using this exact structure:
+
+### 🌱 Best Remedy
+[Provide 3-5 practical homemade solutions using common household items. Include measurements and application instructions]
+
+### 🔍 Primary Causes
+[Bulleted list of 4-7 potential causes ranked by likelihood. Include: 
+- Pathogen type (fungal/bacterial/viral) 
+- Environmental factors 
+- Common vectors]
+
+### 📚 Detailed Explanation
+[200-300 word technical analysis covering:
+1. Disease progression stages
+2. Risk factors
+3. Prevention strategies
+4. Scientific naming of pathogens]
+
+**Requirements:**
+1. Use Markdown formatting with ### headings
+2. Prioritize solutions safe for organic farming
+3. Include local measurement units ({language} specific)
+4. List causes as bullet points (✗ ✗ ✗)
+5. Mention regional climate considerations
+6. Avoid diagnostic disclaimers
+7. Use simple {language} terminology
       `;
     }
 
