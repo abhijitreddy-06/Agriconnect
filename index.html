@@ -46,7 +46,7 @@ a{
   width: 100%;
   height: 100%;
   background: url("/main-bg") no-repeat center center/cover;
-  opacity: 0.85; /* Adjust for 50% opacity */
+
   z-index: -1; /* Sends it behind the content */
 }
 header {
@@ -234,13 +234,16 @@ header {
   .login-btn button {
     width: 5rem;
   }
+    .body-bg {
+    background: url("/main-bg1") no-repeat center center/cover;
+  }
 }
 
 /* main */
 .main-container {
-  color: #fff;
-  font-size: 20px;
-  text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000,
+  color: white;
+  font-size: 24px;
+  text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000,
     -1px 1px 0 #000;
   max-width: 1200px;
   height: 80vh;
@@ -248,8 +251,8 @@ header {
   margin: auto;
   margin-top: 2rem;
   margin-bottom: 2rem;
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(5px);
+  /* background: rgba(255, 255, 255, 0.2); */
+  /* backdrop-filter: blur(5px); */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -299,7 +302,7 @@ footer */
 .icons:hover{
 color:black;
 }
-                </style>
+            </style>
                     <style>
                       /* Loading screen styles */
                       #global-loader {
@@ -346,9 +349,9 @@ color:black;
 <body class="h">
     <!-- Background element for styling purposes -->
     <div class="body-bg"></div>
-    <div id="global-loader">
-      <div class="loader-spinner"></div>
-    </div>
+<div id="global-loader">
+  <div class="loader-spinner"></div>
+</div>
     <header>
  
         <!-- Navigation bar -->

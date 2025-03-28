@@ -529,6 +529,10 @@ app.get("/main-bg", (req, res) => {
   // This will send the image file "logo.png" located in the "images" folder.
   res.sendFile(path.join(__dirname, "hero_grass.jpg"));
 });
+app.get("/main-bg1", (req, res) => {
+  // This will send the image file "logo.png" located in the "images" folder.
+  res.sendFile(path.join(__dirname, "hero_grass1.jpg"));
+});
 // Serve farmer signup page.
 app.get("/signup", (req, res) => {
   res.sendFile(path.join(__dirname, "signUp.html"));

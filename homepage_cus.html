@@ -41,7 +41,7 @@
                         width: 100%;
                         height: 100%;
                         background: url("/main-bg") no-repeat center center/cover;
-                        opacity: 0.85;
+             
                         /* Adjust for 50% opacity */
                         z-index: -1;
                         /* Sends it behind the content */
@@ -200,7 +200,9 @@
                         .logo {
                             font-size: medium;
                         }
-                
+                    .body-bg {
+    background: url("/main-bg1") no-repeat center center/cover;
+  }
                         .nav-links {
                             display: none;
                             flex-direction: column;
@@ -246,8 +248,8 @@
                     /* main */
                     .main-container {
                         color: #fff;
-                        font-size: 20px;
-                        text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000,
+                        font-size: 24px;
+                        text-shadow: 2px px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000,
                             -1px 1px 0 #000;
                         max-width: 1200px;
                         height: 80vh;
@@ -255,8 +257,7 @@
                         margin: auto;
                         margin-top: 2rem;
                         margin-bottom: 2rem;
-                        background: rgba(255, 255, 255, 0.2);
-                        backdrop-filter: blur(5px);
+
                         display: flex;
                         flex-direction: column;
                         justify-content: center;
@@ -310,16 +311,56 @@
                         color: black;
                     }
                 </style>
-
+                    <style>
+                        /* Loading screen styles */
+                        #global-loader {
+                            position: fixed;
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            height: 100%;
+                            background: #ffffff;
+                            z-index: 9999;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            transition: opacity 0.3s ease;
+                        }
+                    
+                        .loader-spinner {
+                            width: 50px;
+                            height: 50px;
+                            border: 5px solid #f3f3f3;
+                            border-top: 5px solid #1a2d40;
+                            border-radius: 50%;
+                            animation: spin 1s linear infinite;
+                        }
+                    
+                        @keyframes spin {
+                            0% {
+                                transform: rotate(0deg);
+                            }
+                    
+                            100% {
+                                transform: rotate(360deg);
+                            }
+                        }
+                    
+                        /* Initially hide content */
+                        body:not(.loaded)> :not(#global-loader) {
+                            opacity: 0;
+                            visibility: hidden;
+                        }
+                    </style>
     <!-- Link to Google Fonts (Nunito) -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap" rel="stylesheet">
                 <link rel="stylesheet" href="/loading.css">
 </head>
 
 <body>
-    <div id="loadingOverlay">
-        <div class="spinner"></div>
-    </div>
+<div id="global-loader">
+    <div class="loader-spinner"></div>
+</div>
     <!-- Background element for styling purposes -->
     <div class="body-bg"></div>
     <!-- Header section containing the navigation bar -->
@@ -405,6 +446,44 @@
         };
 
     
+</script><script>
+    // Show loader immediately
+    document.addEventListener('readystatechange', () => {
+        if (document.readyState === 'complete') {
+            document.body.classList.add('loaded');
+            document.getElementById('global-loader').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('global-loader').remove();
+            }, 300);
+        }
+    });
+
+    // Handle page transitions
+    document.addEventListener('DOMContentLoaded', () => {
+        // Show loader before unload
+        window.addEventListener('beforeunload', () => {
+            document.body.classList.remove('loaded');
+            document.getElementById('global-loader').style.opacity = '1';
+        });
+
+        // Fade in content after load
+        setTimeout(() => {
+            document.body.classList.add('loaded');
+            document.getElementById('global-loader').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('global-loader').remove();
+            }, 300);
+        }, 300);
+    });
+
+    // Fallback for slow connections
+    window.onload = function () {
+        document.body.classList.add('loaded');
+        document.getElementById('global-loader').style.opacity = '0';
+        setTimeout(() => {
+            document.getElementById('global-loader').remove();
+        }, 300);
+    };
 </script>
 </body>
 
