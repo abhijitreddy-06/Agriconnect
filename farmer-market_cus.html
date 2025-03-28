@@ -3,965 +3,974 @@
 
 <head>
   <!-- Meta tags and title -->
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Farmer Market</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Customer Market</title>
 
+  <!-- External CSS: Font Awesome and Google Fonts -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap" rel="stylesheet">
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-    
-      body {
-        font-family: "Arial", sans-serif;
-        margin: 0;
-        padding: 0;
-        height: 100vh;
-        position: relative;
-      }
-    
-      body {
-        font-family: 'Nunito';
-      }
-    
-      a {
-        color: black;
-        text-decoration: none;
-      }
-    
-      .body-bg {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: url("/main-bg") no-repeat center center/cover;
-    
-        /* Adjust for 50% opacity */
-        z-index: -1;
-        /* Sends it behind the content */
-      }
-    
-      header {
-        position: relative;
-        z-index: 1;
-      }
-    
-      header {
-        background: #1a2d40;
-        color: white;
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        width: 100%;
-      }
-    
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap" rel="stylesheet" />
+
+  <!-- Inline CSS styles -->
+  <style>
+    /* Global reset and box-sizing */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Base body styling */
+    body {
+      font-family: "Arial", sans-serif;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      position: relative;
+    }
+
+    /* Override with Nunito font */
+    body {
+      font-family: 'Nunito';
+    }
+
+    /* Link styling */
+    a {
+      color: black;
+      text-decoration: none;
+    }
+
+    /* Background image for the body */
+    .body-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url("/main-bg") no-repeat center center/cover;
+      /* Adjust for 50% opacity */
+      z-index: -1;
+      /* Sends it behind the content */
+    }
+
+    /* Header section styles */
+    header {
+      position: relative;
+      z-index: 1;
+    }
+
+    header {
+      background: #1a2d40;
+      color: white;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      width: 100%;
+    }
+
+    /* Navbar styling */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      width: 100%;
+      max-width: none;
+      padding-left: 1rem;
+      gap: 10px;
+    }
+
+    /* Logo styling */
+    .logo {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #c4a484;
+      flex: 1;
+      text-decoration: none;
+    }
+
+    /* Navigation links styling */
+    .nav-links {
+      display: flex;
+      list-style: none;
+      flex: 3;
+      justify-content: center;
+    }
+
+    .nav-links li {
+      margin: 0 15px;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: white;
+      font-size: 1rem;
+      padding: 10px;
+      border-radius: 5px;
+      transition: all 0.3s;
+    }
+
+    .nav-links a:hover {
+      background-color: #fefefe;
+      color: black;
+    }
+
+    /* Dropdown button styling */
+    .dropbtn {
+      background: white;
+      color: black;
+      border: none;
+      padding: 10px 15px;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 5px;
+      box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+      white-space: nowrap;
+    }
+
+    /* Dropdown container */
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    /* Dropdown content (hidden by default) */
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #1a2d40;
+      color: white;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+      z-index: 1;
+    }
+
+    /* Links inside the dropdown */
+    .dropdown-content a {
+      color: white;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+    }
+
+    .dropdown-content a:hover {
+      background-color: white;
+      color: black;
+    }
+
+    .dropbtn:hover {
+      background: #c4a484;
+    }
+
+    /* Login button styling */
+    .login-btn {
+      background: white;
+      color: black;
+      border: none;
+      padding: 10px 15px;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 5px;
+      box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+      white-space: nowrap;
+      margin-left: auto;
+    }
+
+    .login-btn:hover {
+      background: #c4a484;
+    }
+
+    /* Hamburger menu styling for mobile */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+
+    .bar {
+      background-color: white;
+      height: 3px;
+      width: 25px;
+      margin: 3px 0;
+    }
+
+    /* Responsive styles for devices with max-width 768px */
+    @media (max-width: 768px) {
       .navbar {
-        display: flex;
+        flex-wrap: wrap;
         justify-content: space-between;
-        align-items: center;
-        padding: 1rem 2rem;
-        max-width: 1200px;
-        margin: 0 auto;
-        position: relative;
-        width: 100%;
-        max-width: none;
-        padding-left: 1rem;
-        gap: 10px;
+        gap: 5px;
       }
-    
+
       .logo {
-        font-size: 2rem;
-        font-weight: bold;
-        color: #c4a484;
-        flex: 1;
-        text-decoration: none;
+        font-size: medium;
       }
-    
+
+      .body-bg {
+        background: url("/main-bg1") no-repeat center center/cover;
+      }
+
       .nav-links {
-        display: flex;
-        list-style: none;
-        flex: 3;
-        justify-content: center;
-      }
-    
-      .nav-links li {
-        margin: 0 15px;
-      }
-    
-      .nav-links a {
-        text-decoration: none;
-        color: white;
-        font-size: 1rem;
-        padding: 10px;
-        border-radius: 5px;
-        transition: all 0.3s;
-      }
-    
-      .nav-links a:hover {
-        background-color: #fefefe;
-        color: black;
-      }
-    
-      /* dropdown button  */
-    
-      .dropbtn {
-        background: white;
-        color: black;
-        border: none;
-        padding: 10px 15px;
-        font-size: 1rem;
-        cursor: pointer;
-        border-radius: 5px;
-        box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
-        white-space: nowrap;
-    
-      }
-    
-      /* Dropdown container */
-      .dropdown {
-        position: relative;
-        display: inline-block;
-      }
-    
-      /* Dropdown content (hidden by default) */
-      .dropdown-content {
         display: none;
-        position: absolute;
+        flex-direction: column;
         background-color: #1a2d40;
-        color: white;
-        min-width: 160px;
-        box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-        z-index: 1;
-      }
-    
-      /* Links inside the dropdown */
-      .dropdown-content a {
-        color: white;
-        padding: 12px 16px;
-        text-decoration: none;
-        display: block;
-      }
-    
-      .dropdown-content a:hover {
-        background-color: white;
-        color: black;
-      }
-    
-      .dropbtn:hover {
-        background: #c4a484;
-      }
-    
-      /*login button*/
-      .login-btn {
-        background: white;
-        color: black;
-        border: none;
-        padding: 10px 15px;
-        font-size: 1rem;
-        cursor: pointer;
-        border-radius: 5px;
-        box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
-        white-space: nowrap;
-        margin-left: auto;
-      }
-    
-      .login-btn:hover {
-        background: #c4a484;
-      }
-    
-      .hamburger {
-        display: none;
-        flex-direction: column;
-        cursor: pointer;
-        margin-left: 10px;
-      }
-    
-      .bar {
-        background-color: white;
-        height: 3px;
-        width: 25px;
-        margin: 3px 0;
-      }
-    
-      @media (max-width: 768px) {
-        .navbar {
-          flex-wrap: wrap;
-          justify-content: space-between;
-          gap: 5px;
-        }
-    
-        .logo {
-          font-size: medium;
-        }
-    
-        .body-bg {
-          background: url("/main-bg1") no-repeat center center/cover;
-        }
-    
-        .nav-links {
-          display: none;
-          flex-direction: column;
-          background-color: #1a2d40;
-          position: absolute;
-          top: 60px;
-          width: 100%;
-          left: 0;
-          z-index: 1;
-          text-align: center;
-          padding: 10px 0;
-        }
-    
-        .nav-links.active {
-          display: flex;
-        }
-    
-        .nav-links li {
-          margin: 10px 0;
-        }
-    
-        .hamburger {
-          display: flex;
-        }
-    
-        .dropdown button {
-          width: 6rem;
-        }
-    
-        .dropdown1 button {
-          width: 5rem;
-        }
-    
-        .dropdown2 button {
-          width: 2rem;
-        }
-    
-        .login-btn button {
-          width: 5rem;
-        }
-      }
-    
-      /* main */
-      .main-container {
-        color: #fff;
-        font-size: 24px;
-        text-shadow: 2px px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000,
-          -1px 1px 0 #000;
-        max-width: 1200px;
-        height: 80vh;
-        width: 90vw;
-        margin: auto;
-        margin-top: 2rem;
-        margin-bottom: 2rem;
-    
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        border-radius: 10px;
-        padding: 25px;
-        opacity: 0;
-        animation: fadeIn 2s forwards;
-        gap: 10px;
-      }
-    
-      .main-container button {
-        width: 15rem;
-        height: 3rem;
-        border-radius: 17px;
-        padding: 10px 20px;
-        font-size: 16px;
-        box-shadow: 2px 4px 8px rgba(0, 0, 0, 2);
-        transition: all 0.3s ease;
-        cursor: pointer;
-      }
-    
-      .main-container button:hover {
-        background: #c4a484;
-        color: black;
-      }
-    
-      @keyframes fadeIn {
-        0% {
-          opacity: 0;
-        }
-    
-        100% {
-          opacity: 1;
-        }
-      }
-    
-      /* 
-                                                                                    footer */
-    
-      .footer {
-        background: #1a2d40;
-        color: white;
-        padding: 20px;
-        text-align: center;
-        /* position: absolute; */
-        bottom: 0;
+        position: absolute;
+        top: 60px;
         width: 100%;
+        left: 0;
+        z-index: 1;
+        text-align: center;
+        padding: 10px 0;
       }
-    
-      .icons:hover {
-        color: black;
+
+      .nav-links.active {
+        display: flex;
       }
-    </style>
-    <style>
-      /* Reset & Global Styles */
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
+
+      .nav-links li {
+        margin: 10px 0;
       }
-    
-      :root {
-        --primary-color: #2A5C82;
-        --secondary-color: #5DA399;
-        --accent-color: #FF7E67;
-        --dark-bg: #1A2D40;
-        --light-bg: #F8F9FA;
-        --text-dark: #2D3436;
-        --text-light: #F8F9FA;
+
+      .hamburger {
+        display: flex;
       }
-    
-      body {
-    
-        margin: 0;
-        padding: 0;
-        height: 100vh;
-        position: relative;
-        background: var(--light-bg);
-        color: var(--text-dark);
-        line-height: 1.6;
+
+      .dropdown button {
+        width: 6rem;
       }
-    
-    
-    
-      /* Container */
-      .container {
-        max-width: 1400px;
+
+      .dropdown1 button {
+        width: 5rem;
+      }
+
+      .dropdown2 button {
+        width: 2rem;
+      }
+
+      .login-btn button {
+        width: 5rem;
+      }
+    }
+
+    /* Main container styles */
+    .main-container {
+      color: #fff;
+      font-size: 24px;
+      text-shadow: 2px px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000,
+        -1px 1px 0 #000;
+      max-width: 1200px;
+      height: 80vh;
+      width: 90vw;
+      margin: auto;
+      margin-top: 2rem;
+      margin-bottom: 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-radius: 10px;
+      padding: 25px;
+      opacity: 0;
+      animation: fadeIn 2s forwards;
+      gap: 10px;
+    }
+
+    .main-container button {
+      width: 15rem;
+      height: 3rem;
+      border-radius: 17px;
+      padding: 10px 20px;
+      font-size: 16px;
+      box-shadow: 2px 4px 8px rgba(0, 0, 0, 2);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .main-container button:hover {
+      background: #c4a484;
+      color: black;
+    }
+
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+      }
+
+      100% {
+        opacity: 1;
+      }
+    }
+
+    /* Footer styling */
+    .footer {
+      background: #1a2d40;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      /* position: absolute; */
+      bottom: 0;
+      width: 100%;
+    }
+
+    .icons:hover {
+      color: black;
+    }
+  </style>
+
+  <!-- Additional CSS styles for marketplace and modal -->
+  <style>
+    /* Reset & Global Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary-color: #2A5C82;
+      --secondary-color: #5DA399;
+      --accent-color: #FF7E67;
+      --dark-bg: #1A2D40;
+      --light-bg: #F8F9FA;
+      --text-dark: #2D3436;
+      --text-light: #F8F9FA;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      position: relative;
+      background: var(--light-bg);
+      color: var(--text-dark);
+      line-height: 1.6;
+    }
+
+    /* Container styling */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+
+    /* Marketplace Grid styling */
+    .marketplace {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      padding: 1rem;
+    }
+
+    /* Product Card Styling */
+    .product-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+      padding: 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+        box-shadow 0.3s ease;
+      overflow: hidden;
+    }
+
+    .product-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: var(--secondary-color);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .product-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+    }
+
+    .product-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .product-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: contain;
+      border-radius: 8px;
+      transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      margin-bottom: 1rem;
+    }
+
+    .product-card:hover img {
+      transform: scale(1.08);
+    }
+
+    .product-card h3 {
+      margin: 0.75rem 0;
+      color: var(--primary-color);
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .price {
+      color: var(--secondary-color);
+      font-weight: 700;
+      font-size: 1.3rem;
+      margin: 0.75rem 0;
+    }
+
+    .reviews {
+      color: #6C757D;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .add-to-cart-btn {
+      background: var(--accent-color);
+      color: var(--text-light);
+      border: none;
+      border-radius: 8px;
+      padding: 0.8rem 1.5rem;
+      cursor: pointer;
+      margin-top: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      width: 100%;
+    }
+
+    .add-to-cart-btn:hover {
+      background: var(--primary-color);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Modal Styling */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    .modal-content {
+      background: #fff;
+      margin: 2% auto;
+      padding: 2rem;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 700px;
+      position: relative;
+      animation: slideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-image-container {
+      max-height: 70vh;
+      overflow: auto;
+      margin-bottom: 1rem;
+      border-radius: 8px;
+      background: #f5f5f5;
+      padding: 0.5rem;
+    }
+
+    .modal-content img {
+      max-width: 100%;
+      height: auto;
+      object-fit: contain;
+      border-radius: 8px;
+      margin: 0 auto;
+      display: block;
+    }
+
+    .close {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      font-size: 2rem;
+      color: var(--text-dark);
+      transition: color 0.3s ease;
+    }
+
+    .close:hover {
+      color: var(--accent-color);
+    }
+
+    /* Hero/Banner Section styling */
+    .hero-section {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      background: linear-gradient(90deg, #26A65B 0%, #2ECC71 100%);
+      margin: 2rem auto;
+      max-width: 1400px;
+    }
+
+    .hero-text {
+      color: #fff;
+      max-width: 50%;
+    }
+
+    .hero-text h1 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      line-height: 1.3;
+    }
+
+    .hero-text p {
+      font-size: 1.1rem;
+      margin-bottom: 0;
+    }
+
+    .hero-image {
+      max-width: 400px;
+      width: 100%;
+      border-radius: 8px;
+      margin-left: 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .hero-section {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .hero-text {
+        max-width: 100%;
+        margin-bottom: 1.5rem;
+      }
+
+      .hero-image {
+        max-width: 80%;
         margin: 0 auto;
-        padding: 2rem 1rem;
       }
-    
-    
-    
-      /* Marketplace Grid */
+    }
+
+    /* Social icons styling */
+    .social-icons a {
+      color: var(--text-light);
+      font-size: 1.5rem;
+      transition: transform 0.3s ease;
+    }
+
+    /* Marketplace Responsive Breakpoints */
+    @media (max-width: 1024px) {
       .marketplace {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 1.5rem;
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .marketplace {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .modal-content {
+        padding: 1.5rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .marketplace {
+        grid-template-columns: 1fr;
+      }
+
+      .product-card {
         padding: 1rem;
       }
-    
-      /* Product Card Styling */
-      .product-card {
-        background: #fff;
-        border-radius: 12px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
-        padding: 1.5rem;
-        text-align: center;
-        cursor: pointer;
-        position: relative;
-        transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-          box-shadow 0.3s ease;
-        overflow: hidden;
-      }
-    
-      .product-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 4px;
-        background: var(--secondary-color);
-        transform: scaleX(0);
-        transition: transform 0.3s ease;
-      }
-    
-      .product-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
-      }
-    
-      .product-card:hover::before {
-        transform: scaleX(1);
-      }
-    
-      .product-card img {
-        width: 100%;
-        height: 200px;
-        object-fit: contain;
-        border-radius: 8px;
-        transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        margin-bottom: 1rem;
-      }
-    
-      .product-card:hover img {
-        transform: scale(1.08);
-      }
-    
-      .product-card h3 {
-        margin: 0.75rem 0;
-        color: var(--primary-color);
-        font-size: 1.25rem;
-        font-weight: 600;
-      }
-    
-      .price {
-        color: var(--secondary-color);
-        font-weight: 700;
-        font-size: 1.3rem;
-        margin: 0.75rem 0;
-      }
-    
-      .reviews {
-        color: #6C757D;
-        font-size: 0.9rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
-      }
-    
-      .add-to-cart-btn {
-        background: var(--accent-color);
-        color: var(--text-light);
-        border: none;
-        border-radius: 8px;
-        padding: 0.8rem 1.5rem;
-        cursor: pointer;
-        margin-top: 1rem;
-        font-weight: 600;
-        letter-spacing: 0.5px;
-        transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        width: 100%;
-      }
-    
-      .add-to-cart-btn:hover {
-        background: var(--primary-color);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      }
-    
-      /* Modal Styling */
-      .modal {
-        display: none;
-        position: fixed;
-        z-index: 1000;
-        inset: 0;
-        background-color: rgba(0, 0, 0, 0.6);
-        backdrop-filter: blur(4px);
-        animation: fadeIn 0.4s ease-out;
-      }
-    
+
       .modal-content {
-        background: #fff;
-        margin: 2% auto;
-        padding: 2rem;
-        border-radius: 12px;
-        width: 90%;
-        max-width: 700px;
-        position: relative;
-        animation: slideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        max-height: 90vh;
-        display: flex;
-        flex-direction: column;
+        width: 95%;
+        margin: 1rem auto;
       }
-    
-      .modal-image-container {
-        max-height: 70vh;
-        overflow: auto;
-        margin-bottom: 1rem;
-        border-radius: 8px;
-        background: #f5f5f5;
-        padding: 0.5rem;
+    }
+
+    /* Loading Animation */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
       }
-    
-      .modal-content img {
-        max-width: 100%;
-        height: auto;
-        object-fit: contain;
-        border-radius: 8px;
-        margin: 0 auto;
-        display: block;
+
+      to {
+        opacity: 1;
       }
-    
-      .close {
-        position: absolute;
-        top: 1.5rem;
-        right: 1.5rem;
-        font-size: 2rem;
-        color: var(--text-dark);
-        transition: color 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateY(-30px);
+        opacity: 0;
       }
-    
-      .close:hover {
-        color: var(--accent-color);
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
       }
-    
-      /* Hero/Banner Section */
-      .hero-section {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 2rem;
-        border-radius: 12px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        background: linear-gradient(90deg, #26A65B 0%, #2ECC71 100%);
-        margin: 2rem auto;
-        max-width: 1400px;
-      }
-    
-      .hero-text {
-        color: #fff;
-        max-width: 50%;
-      }
-    
+    }
+
+    /* Enhanced Hero Section styling */
+    .hero-section {
+      position: relative;
+      overflow: hidden;
+      margin: 2rem auto;
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(42, 92, 130, 0.9) 0%, rgba(93, 163, 153, 0.9) 100%);
+      backdrop-filter: blur(5px);
+      padding: 4rem 2rem;
+    }
+
+    .hero-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url("/images/hero_grass.jpg") no-repeat center center/cover;
+      z-index: -1;
+    }
+
+    .hero-text {
+      position: relative;
+      z-index: 1;
+      max-width: 600px;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .hero-text h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+      line-height: 1.2;
+      color: var(--text-light);
+    }
+
+    .hero-text p {
+      font-size: 1.25rem;
+      margin-bottom: 2rem;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .cta-button {
+      display: inline-block;
+      background: var(--accent-color);
+      color: var(--text-light);
+      padding: 1rem 2.5rem;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: 700;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(255, 126, 103, 0.3);
+    }
+
+    .cta-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 126, 103, 0.4);
+    }
+
+    .hero-image {
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s ease;
+    }
+
+    /* Enhanced Container styling */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 15px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      position: relative;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 1024px) {
       .hero-text h1 {
-        font-size: 1.8rem;
-        margin-bottom: 1rem;
-        line-height: 1.3;
+        font-size: 2rem;
       }
-    
+
       .hero-text p {
         font-size: 1.1rem;
-        margin-bottom: 0;
       }
-    
-      .hero-image {
-        max-width: 400px;
-        width: 100%;
-        border-radius: 8px;
-        margin-left: 1.5rem;
-      }
-    
-      @media (max-width: 768px) {
-        .hero-section {
-          flex-direction: column;
-          text-align: center;
-        }
-    
-        .hero-text {
-          max-width: 100%;
-          margin-bottom: 1.5rem;
-        }
-    
-        .hero-image {
-          max-width: 80%;
-          margin: 0 auto;
-        }
-      }
-    
-    
-      .social-icons a {
-        color: var(--text-light);
-        font-size: 1.5rem;
-        transition: transform 0.3s ease;
-      }
-    
-    
-      /* Marketplace Responsive Breakpoints */
-      @media (max-width: 1024px) {
-        .marketplace {
-          grid-template-columns: repeat(3, 1fr);
-        }
-      }
-    
-      @media (max-width: 768px) {
-        .marketplace {
-          grid-template-columns: repeat(2, 1fr);
-        }
-    
-        .modal-content {
-          padding: 1.5rem;
-        }
-      }
-    
-      @media (max-width: 480px) {
-        .marketplace {
-          grid-template-columns: 1fr;
-        }
-    
-        .product-card {
-          padding: 1rem;
-        }
-    
-        .modal-content {
-          width: 95%;
-          margin: 1rem auto;
-        }
-      }
-    
-      /* Loading Animation */
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-        }
-    
-        to {
-          opacity: 1;
-        }
-      }
-    
-      @keyframes slideIn {
-        from {
-          transform: translateY(-30px);
-          opacity: 0;
-        }
-    
-        to {
-          transform: translateY(0);
-          opacity: 1;
-        }
-      }
-    
-    
-    
-    
-    
-      /* Enhanced Hero Section */
-      .hero-section {
-        position: relative;
-        overflow: hidden;
-        margin: 2rem auto;
-        border-radius: 20px;
-        background: linear-gradient(135deg, rgba(42, 92, 130, 0.9) 0%, rgba(93, 163, 153, 0.9) 100%);
-        backdrop-filter: blur(5px);
-        padding: 4rem 2rem;
-      }
-    
-      .hero-section::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: url("/images/hero_grass.jpg") no-repeat center center/cover;
-        z-index: -1;
-      }
-    
-      .hero-text {
-        position: relative;
-        z-index: 1;
-        max-width: 600px;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      }
-    
-      .hero-text h1 {
-        font-size: 2.5rem;
-        margin-bottom: 1.5rem;
-        line-height: 1.2;
-        color: var(--text-light);
-      }
-    
-      .hero-text p {
-        font-size: 1.25rem;
-        margin-bottom: 2rem;
-        color: rgba(255, 255, 255, 0.9);
-      }
-    
-      .cta-button {
-        display: inline-block;
-        background: var(--accent-color);
-        color: var(--text-light);
-        padding: 1rem 2.5rem;
-        border-radius: 30px;
-        text-decoration: none;
-        font-weight: 700;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(255, 126, 103, 0.3);
-      }
-    
-      .cta-button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(255, 126, 103, 0.4);
-      }
-    
-      .hero-image {
-        border-radius: 15px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        transition: transform 0.3s ease;
-      }
-    
-      /* Enhanced Container */
-      .container {
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 2rem;
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 15px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-        position: relative;
-      }
-    
-      /* Responsive Adjustments */
-      @media (max-width: 1024px) {
-        .hero-text h1 {
-          font-size: 2rem;
-        }
-    
-        .hero-text p {
-          font-size: 1.1rem;
-        }
-    
-        .search-container {
-          max-width: 500px;
-        }
-      }
-    
-      @media (max-width: 768px) {
-        .hero-section {
-          padding: 3rem 1.5rem;
-          text-align: center;
-        }
-    
-        .hero-text {
-          max-width: 100%;
-          margin-bottom: 2rem;
-        }
-    
-        .hero-image {
-          max-width: 90%;
-        }
-    
-        .input-group {
-          flex-direction: column;
-          background: transparent;
-        }
-    
-        .search-input {
-          width: 100%;
-          background: rgba(255, 255, 255, 0.95);
-          margin-bottom: 0.5rem;
-          border-radius: 25px;
-        }
-    
-        .search-button {
-          width: 100%;
-          margin-left: 0;
-          border-radius: 25px;
-        }
-    
-        .container {
-          padding: 1.5rem;
-          border-radius: 10px;
-        }
-      }
-    
-      @media (max-width: 480px) {
-        .hero-section {
-          padding: 2rem 1rem;
-        }
-    
-        .hero-text h1 {
-          font-size: 1.75rem;
-        }
-    
-        .cta-button {
-          width: 100%;
-          text-align: center;
-        }
-    
-        .search-container {
-          width: 100%;
-        }
-    
-        .container {
-          padding: 1rem;
-        }
-      }
-    
-      /* Animation Enhancements */
-      @keyframes float {
-        0% {
-          transform: translateY(0px);
-        }
-    
-        50% {
-          transform: translateY(-10px);
-        }
-    
-        100% {
-          transform: translateY(0px);
-        }
-      }
-    
-      .hero-image {
-        animation: float 4s ease-in-out infinite;
-      }
-    </style>
-    
-    <style>
-      /* Loading screen styles */
-      #global-loader {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: #ffffff;
-        z-index: 9999;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        transition: opacity 0.3s ease;
-      }
-    
-      .loader-spinner {
-        width: 50px;
-        height: 50px;
-        border: 5px solid #f3f3f3;
-        border-top: 5px solid #1a2d40;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-      }
-    
-      @keyframes spin {
-        0% {
-          transform: rotate(0deg);
-        }
-    
-        100% {
-          transform: rotate(360deg);
-        }
-      }
-    
-      /* Initially hide content */
-      body:not(.loaded)> :not(#global-loader) {
-        opacity: 0;
-        visibility: hidden;
-      }
-    </style>
-    <style>
+
       .search-container {
-        max-width: 600px;
-        /* Maximum width for large screens */
-        margin: 20px auto;
-        /* Center the container */
-        padding: 0 15px;
-        /* Padding on mobile */
-        margin-bottom:20px;
+        max-width: 500px;
       }
-    
+    }
+
+    @media (max-width: 768px) {
+      .hero-section {
+        padding: 3rem 1.5rem;
+        text-align: center;
+      }
+
+      .hero-text {
+        max-width: 100%;
+        margin-bottom: 2rem;
+      }
+
+      .hero-image {
+        max-width: 90%;
+      }
+
+      .input-group {
+        flex-direction: column;
+        background: transparent;
+      }
+
       .search-input {
         width: 100%;
-        padding: 12px 20px;
-        font-size: 1rem;
-        border: 2px solid #e0e0e0;
+        background: rgba(255, 255, 255, 0.95);
+        margin-bottom: 0.5rem;
         border-radius: 25px;
-        outline: none;
-        transition: all 0.3s ease;
-        box-sizing: border-box;
-        /* Include padding in width calculation */
-        margin-bottom:20px;
-        /* Modern font rendering */
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, sans-serif;
       }
-    
-      /* Hover state */
-      .search-input:hover {
-        border-color: #bdbdbd;
+
+      .search-button {
+        width: 100%;
+        margin-left: 0;
+        border-radius: 25px;
       }
-    
-      /* Focus state */
-      .search-input:focus {
-        border-color: #2196F3;
-        box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+
+      .container {
+        padding: 1.5rem;
+        border-radius: 10px;
       }
-    
-      /* Mobile responsiveness */
-      @media (max-width: 480px) {
-        .search-input {
-          padding: 10px 16px;
-          font-size: 0.9rem;    margin-bottom:20px;
-        }
+    }
+
+    @media (max-width: 480px) {
+      .hero-section {
+        padding: 2rem 1rem;
       }
-    
-      /* Optional: Add a search icon */
+
+      .hero-text h1 {
+        font-size: 1.75rem;
+      }
+
+      .cta-button {
+        width: 100%;
+        text-align: center;
+      }
+
+      .search-container {
+        width: 100%;
+      }
+
+      .container {
+        padding: 1rem;
+      }
+    }
+
+    /* Animation Enhancements */
+    @keyframes float {
+      0% {
+        transform: translateY(0px);
+      }
+
+      50% {
+        transform: translateY(-10px);
+      }
+
+      100% {
+        transform: translateY(0px);
+      }
+    }
+
+    .hero-image {
+      animation: float 4s ease-in-out infinite;
+    }
+  </style>
+
+  <!-- Loading screen styles -->
+  <style>
+    #global-loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #ffffff;
+      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: opacity 0.3s ease;
+    }
+
+    .loader-spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid #1a2d40;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Initially hide content */
+    body:not(.loaded)> :not(#global-loader) {
+      opacity: 0;
+      visibility: hidden;
+    }
+  </style>
+
+  <!-- Search container styling -->
+  <style>
+    .search-container {
+      max-width: 600px;
+      /* Maximum width for large screens */
+      margin: 20px auto;
+      /* Center the container */
+      padding: 0 15px;
+      /* Padding on mobile */
+      margin-bottom: 20px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 12px 20px;
+      font-size: 1rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 25px;
+      outline: none;
+      transition: all 0.3s ease;
+      box-sizing: border-box;
+      /* Include padding in width calculation */
+      margin-bottom: 20px;
+      /* Modern font rendering */
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, sans-serif;
+    }
+
+    /* Hover state for search input */
+    .search-input:hover {
+      border-color: #bdbdbd;
+    }
+
+    /* Focus state for search input */
+    .search-input:focus {
+      border-color: #2196F3;
+      box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 480px) {
       .search-input {
-        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23757575" width="18px" height="18px"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>');
-        background-repeat: no-repeat;
-        background-position: 15px center;
-        background-size: 18px;
-        padding-left: 40px;    margin-bottom:20px;
+        padding: 10px 16px;
+        font-size: 0.9rem;
+        margin-bottom: 20px;
       }
-    </style>
+    }
+
+    /* Optional: Add a search icon */
+    .search-input {
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23757575" width="18px" height="18px"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>');
+      background-repeat: no-repeat;
+      background-position: 15px center;
+      background-size: 18px;
+      padding-left: 40px;
+      margin-bottom: 20px;
+    }
+  </style>
 </head>
 
 <body>
-<div id="global-loader">
-  <div class="loader-spinner"></div>
-</div>  
+  <!-- Global loader shown while content is loading -->
+  <div id="global-loader">
+    <div class="loader-spinner"></div>
+  </div>
+
   <!-- Header section with navigation -->
-    <header>
-      <nav class="navbar">
-        <!-- Logo for AgriConnect -->
-        <div class="logo">AgriConnect</div>
-    
-        <!-- Navigation links -->
-        <ul class="nav-links">
-          <li><a href="/homecus">🏠Home</a></li>
-          <li><a href="/marketcus">🛒Farmers’ Market</a></li>
-          <li><a href="/">Log-out</a></li>
-        </ul>
-    
-        <!-- Dropdown for language selection -->
-        <div class="dropdown">
-          <!-- Button that triggers the language dropdown -->
-          <button class="dropbtn" onclick="toggleDropdown(this)">Language</button>
-          <!-- Dropdown content with available languages -->
-          <div class="dropdown-content">
-            <a href="">English</a>
-            <a href="">Kannada</a>
-          </div>
-        </div>
-    
-        <!-- Profile button -->
-        <div class="dropdown dropdown1">
-          <button class="dropbtn" onclick="toggleDropdown(this)">Profile</button>
-          <div class="dropdown-content">
-            <a href="">My Details</a>
-            <a href="">My Cart</a>
-          </div>
-        </div>
-    
-        <!-- Hamburger menu for mobile devices -->
-        <div class="hamburger">
-          <span class="bar"></span>
-          <span class="bar"></span>
-          <span class="bar"></span>
-        </div>
-              <!-- <div class="search-container">
-        <input type="text" placeholder="Search here..." class="search-input">
-      </div> -->
-      <div class="search-container">
-        <div class="input-group">
-   
-          <input type="text" class="search-input" id="searchInput" placeholder="Search...">
-       
+  <header>
+    <nav class="navbar">
+      <!-- Logo for AgriConnect -->
+      <div class="logo">AgriConnect</div>
+
+      <!-- Navigation links -->
+      <ul class="nav-links">
+        <li><a href="/homecus">🏠Home</a></li>
+        <li><a href="/marketcus">🛒Farmers’ Market</a></li>
+        <li><a href="/">Log-out</a></li>
+      </ul>
+
+      <!-- Dropdown for language selection -->
+      <div class="dropdown">
+        <!-- Button that triggers the language dropdown -->
+        <button class="dropbtn" onclick="toggleDropdown(this)">Language</button>
+        <!-- Dropdown content with available languages -->
+        <div class="dropdown-content">
+          <a href="">English</a>
+          <a href="">Kannada</a>
         </div>
       </div>
-      </nav>
-    </header>
 
+      <!-- Profile dropdown -->
+      <div class="dropdown dropdown1">
+        <button class="dropbtn" onclick="toggleDropdown(this)">Profile</button>
+        <div class="dropdown-content">
+          <a href="">My Details</a>
+          <a href="">My Cart</a>
+        </div>
+      </div>
+
+      <!-- Hamburger menu for mobile devices -->
+      <div class="hamburger">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </div>
+
+      <!-- Search container (uncomment if needed) -->
+      <!-- <div class="search-container">
+          <input type="text" placeholder="Search here..." class="search-input">
+        </div> -->
+
+      <!-- Active search container -->
+      <div class="search-container">
+        <div class="input-group">
+          <input type="text" class="search-input" id="searchInput" placeholder="Search..." />
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Hero section with banner image and text -->
   <div class="hero-section">
     <div class="hero-text">
       <h1>Farmer Bazaar is One of India’s Largest Marketplace.</h1>
       <p>User Can BUY, SELL & RENT Agriculture.</p>
     </div>
     <!-- Replace /images/farmer-bazaar.jpg with your actual banner image path -->
-    <img src="/farmer-bg" alt="Farmer Bazaar" class="hero-image">
+    <img src="/farmer-bg" alt="Farmer Bazaar" class="hero-image" />
   </div>
 
   <!-- Main container for marketplace content -->
@@ -978,7 +987,7 @@
       <!-- Close button for the modal -->
       <span class="close" onclick="closeModal()">&times;</span>
       <!-- Product image -->
-      <img id="modalImage" src="" alt="Product Image">
+      <img id="modalImage" src="" alt="Product Image" />
       <!-- Product name -->
       <h3 id="modalName"></h3>
       <!-- Product price -->
@@ -999,8 +1008,7 @@
     <p>&copy; 2025 AgriConnect. All rights reserved.</p>
   </footer>
 
-
-
+  <!-- JavaScript for product fetching, modal handling, and cart functionality -->
   <script>
     // Function to fetch products from the API
     async function fetchProducts() {
@@ -1068,6 +1076,8 @@
     // Fetch products once the DOM content is fully loaded
     document.addEventListener('DOMContentLoaded', fetchProducts);
   </script>
+
+  <!-- JavaScript for loader and page transitions -->
   <script>
     // Show loader immediately
     document.addEventListener('readystatechange', () => {
@@ -1106,19 +1116,24 @@
         document.getElementById('global-loader').remove();
       }, 300);
     };
-  </script><script>//navbar
+  </script>
+
+  <!-- JavaScript for navbar hamburger and dropdown toggling -->
+  <script>
+    // Navbar hamburger menu toggle
     const hamburger = document.querySelector(".hamburger");
     const navLinks = document.querySelector(".nav-links");
 
     hamburger.addEventListener("click", () => {
       navLinks.classList.toggle("active");
     });
+
+    // Function to toggle dropdown menus
     function toggleDropdown(button) {
       const dropdownContent = button.parentElement.querySelector(".dropdown-content");
       dropdownContent.style.display =
         dropdownContent.style.display === "block" ? "none" : "block";
     }
-
 
     // Close the dropdown if the user clicks outside
     window.onclick = function (event) {
@@ -1131,60 +1146,59 @@
         });
       }
     };
-
-
   </script>
+
+  <!-- JavaScript for search functionality and fetching all products -->
   <script>
-let allProducts = [];
+    let allProducts = [];
 
-// Fetch all products when the page loads
-async function fetchProducts() {
-try {
-const res = await fetch("/api/products");
-allProducts = await res.json();
-renderProducts(allProducts);
-} catch (error) {
-console.error("Error fetching products:", error);
-}
-}
+    // Fetch all products when the page loads
+    async function fetchProducts() {
+      try {
+        const res = await fetch("/api/products");
+        allProducts = await res.json();
+        renderProducts(allProducts);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    }
 
-// Function to render products into the marketplace container
-function renderProducts(products) {
-const marketplace = document.getElementById("marketplace");
-marketplace.innerHTML = "";
-if (!products || products.length === 0) {
-marketplace.innerHTML = "<p>No products available.</p>";
-return;
-}
-products.forEach((product) => {
-const card = document.createElement("div");
-card.className = "product-card";
-card.onclick = () => openModal(product); // Assume you have this function defined
-card.innerHTML = `
+    // Function to render products into the marketplace container
+    function renderProducts(products) {
+      const marketplace = document.getElementById("marketplace");
+      marketplace.innerHTML = "";
+      if (!products || products.length === 0) {
+        marketplace.innerHTML = "<p>No products available.</p>";
+        return;
+      }
+      products.forEach((product) => {
+        const card = document.createElement("div");
+        card.className = "product-card";
+        card.onclick = () => openModal(product); // Assume you have this function defined
+        card.innerHTML = `
 <img src="${product.image}" alt="${product.product_name}">
 <h3>${product.product_name}</h3>
 <div class="price">${product.currency ?? "₹"}${product.price}</div>
 <div class="reviews">Quality: ${product.quality}</div>
-<button class="add-to-cart-btn" onclick="event.stopPropagation(); addToCart('${
-        product.product_name
-      }')">Add to Cart</button>
+<button class="add-to-cart-btn" onclick="event.stopPropagation(); addToCart('${product.product_name
+          }')">Add to Cart</button>
 `;
-marketplace.appendChild(card);
-});
-}
+        marketplace.appendChild(card);
+      });
+    }
 
-// Listen for input in the search bar
-document.getElementById("searchInput").addEventListener("input", (e) => {
-const query = e.target.value.toLowerCase().trim();
-const filteredProducts = allProducts.filter((product) =>
-product.product_name.toLowerCase().includes(query)
-);
-renderProducts(filteredProducts);
-});
+    // Listen for input in the search bar to filter products
+    document.getElementById("searchInput").addEventListener("input", (e) => {
+      const query = e.target.value.toLowerCase().trim();
+      const filteredProducts = allProducts.filter((product) =>
+        product.product_name.toLowerCase().includes(query)
+      );
+      renderProducts(filteredProducts);
+    });
 
-// Call fetchProducts on DOM content load
-document.addEventListener("DOMContentLoaded", fetchProducts);
-</script>
+    // Call fetchProducts on DOM content load
+    document.addEventListener("DOMContentLoaded", fetchProducts);
+  </script>
 </body>
 
 </html>
